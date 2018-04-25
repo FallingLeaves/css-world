@@ -236,6 +236,13 @@
       counter-increment: wangxiaoer;
     }
 
+    .padding-demo .box0 {
+      width: 80px;
+      padding: 20px 60px;
+      box-sizing: border-box; 
+      background: rebeccapurple;
+    }
+
     .padding-demo .box1 {
       position: relative;
       padding: 31.25% 50%;
@@ -610,7 +617,7 @@
       margin合并：
         1.相邻兄弟元素的合并
         2.父级和第一个或最后一个
-        3.空块级元素的margin合并  即使自身为设置margin也可发生margin合并
+        3.空块级元素的margin合并  即使自身未设置margin也可发生margin合并
 
       阻止margin合并
         对于margin-top合并（满足一个即可）
@@ -735,6 +742,9 @@
   </div>
 
   <div class="padding-demo">
+    <h4>padding足够大，width也无能为力</h4>
+    <div class="box0"></div>
+
     <div class="box1">
       <img src="../img/spring.jpg" alt="" class="">
     </div>
