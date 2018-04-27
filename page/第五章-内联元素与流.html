@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>line-height</title>
+  <title>x,line-height,vertical-align</title>
   <style>
     * {
       padding: 0;
@@ -123,6 +123,296 @@
     .line-height-value .test2 .box2 span {
       line-height: 96px;
     }
+
+    .vertical-align .test1 {
+      display: inline-block;
+      line-height: 32px;
+      font-size: 24px;
+    }
+
+    .vertical-align .test1 span {
+      font-size: 24px;
+    }
+
+    .vertical-align .test2 {
+      position: relative;
+      height: 150px;
+      /* line-height: 150px; */
+    }
+
+    .vertical-align #on {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .vertical-align .test2 .checkbox {
+      position: absolute;
+      right: 0;
+      width: 50px;
+      height: 50px;
+      background-color: aqua;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .vertical-align #on:checked+.test2 .checkbox::after {
+      content: '✔';
+      display: block;
+      font-size: 50px;
+      line-height: 1;
+      color: #00ae8b;
+    }
+
+    .vertical-align #on:checked+.test2 {
+      line-height: 150px;
+    }
+
+    .vertical-align .test2 img {
+      vertical-align: middle;
+    }
+
+    .vertical-align .test3 {
+      display: table;
+      text-align: center;
+    }
+
+    .vertical-align .test3 h4 {
+      display: table-row;
+    }
+
+    .vertical-align .test3 .box {
+      display: table-cell;
+      height: 150px;
+      background: aqua;
+      width: 300px;
+      font-size: 0;
+    }
+
+    .vertical-align .test3 .box1 img {
+      vertical-align: middle;
+    }
+
+    .vertical-align .test3 .box2 {
+      vertical-align: middle;
+    }
+
+    .vertical-align .test4 {
+      position: relative;
+      padding-top: 50px;
+      border-bottom: 1px solid darkgray;
+      margin-bottom: 20px;
+    }
+
+    .vertical-align input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .vertical-align .test4 .radio {
+      position: absolute;
+      top: 0;
+      width: 50px;
+      height: 50px;
+      background-color: aqua;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .vertical-align .test4 .radio:nth-of-type(1) {
+      left: 0;
+    }
+
+    .vertical-align .test4 .radio:nth-of-type(2) {
+      left: 80px;
+    }
+
+    .vertical-align .test4 .radio:nth-of-type(3) {
+      left: 160px;
+    }
+
+    .vertical-align .test4 .radio:nth-of-type(4) {
+      left: 240px;
+    }
+
+    .vertical-align .test4 .radio:nth-of-type(5) {
+      left: 330px;
+    }
+
+    .vertical-align #solve1:checked~.test4 .radio:nth-of-type(1):after,
+    .vertical-align #solve2:checked~.test4 .radio:nth-of-type(2):after,
+    .vertical-align #solve3:checked~.test4 .radio:nth-of-type(3):after,
+    .vertical-align #solve4:checked~.test4 .radio:nth-of-type(4):after,
+    .vertical-align #solve5:checked~.test4 .radio:nth-of-type(5):after {
+      content: '✔';
+      display: block;
+      font-size: 50px;
+      line-height: 1;
+      color: #00ae8b;
+    }
+
+    .vertical-align #solve1:checked~.test4 img,
+    .vertical-align #solve1:checked~.test5 img {
+      display: block;
+    }
+
+    .vertical-align #solve2:checked~.test4,
+    .vertical-align #solve2:checked~.test5 {
+      line-height: 0;
+    }
+
+    .vertical-align #solve3:checked~.test4,
+    .vertical-align #solve3:checked~.test5 {
+      font-size: 0;
+    }
+
+    .vertical-align #solve4:checked~.test4 img,
+    .vertical-align #solve4:checked~.test5 img,
+      {
+      vertical-align: top;
+    }
+
+    .vertical-align .test5 {
+      margin-top: 200px;
+      background: rebeccapurple;
+      text-align: center;
+    }
+
+    .vertical-align .test5::first-letter {
+      background: red;
+    }
+
+    .vertical-align .test5 img {
+      height: 96px;
+      margin-top: -200px;
+    }
+
+    .vertical-align-add .test1 {
+      width: 300px;
+      background: #f0f3f9;
+      text-align: justify;
+      margin: 0 auto;
+    }
+
+    .vertical-align-add .test1 .justify-fix {
+      display: inline-block;
+      width: 96px;
+      outline: 1px dashed red;
+    }
+
+    .vertical-align-add .test2 .dib-baseline {
+      display: inline-block;
+      width: 150px;
+      height: 150px;
+      border: 1px solid aqua;
+      background: rebeccapurple;
+    }
+
+    .vertical-align-add .test3 {
+      line-height: 20px;
+    }
+
+    .icon {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      white-space: nowrap;
+      letter-spacing: -1em;
+      text-indent: -999em;
+    }
+
+    .icon::before {
+      content: "\3000";
+    }
+
+    .icon-delete {
+      background: url("../img/delete.png") no-repeat center center;
+    }
+
+    .vertical-align-add .test4 {
+      text-align: center;
+    }
+
+    .vertical-align-add .test4 .box {
+      position: relative;
+      width: 300px;
+      line-height: 128px;
+      margin: 0 auto;
+      background: cadetblue;
+      font-size: 16px;
+    }
+
+    .vertical-align-add .test4 .box::before,
+    .vertical-align-add .test4 .box .wrap::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      border-top: 1px solid;
+    }
+
+    .vertical-align-add .test4 .box::before {
+      color: greenyellow;
+    }
+
+    .vertical-align-add .test4 .box .wrap {
+      display: inline-block;
+      line-height: 0;
+      color: firebrick;
+      position: relative;
+    }
+
+    .vertical-align-add .test4 .box .wrap img {
+      height: 96px;
+      vertical-align: middle;
+    }
+
+    .vertical-align-add .test4 p {
+      margin: 1em 0;
+    }
+
+    .vertical-align-add .test4 p .dt {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .vertical-align-add .test4 p input {
+      width: 160px;
+      vertical-align: middle;
+    }
+
+    .vertical-align-add .test5 .container {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: rgba(0, 0, 0, .5);
+      text-align: center;
+      white-space: nowrap;
+      font-size: 0;
+      z-index: 99;
+    }
+
+    .vertical-align-add .test5 .container::after {
+      content: "";
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    .vertical-align-add .test5 .container .dialog {
+      display: inline-block;
+      vertical-align: middle;
+      border-radius: 6px;
+      text-align: left;
+      font-size: 16px;
+      white-space: nowrap;
+      background: #fff;
+      overflow: hidden;
+    }
   </style>
 </head>
 
@@ -159,6 +449,8 @@
       无论内联元素的line-height设置为多少，父元素的高度由数值大的那个line-height决定
       只要有内联盒子在，就会生成行框盒子——内联盒子外包裹的看不见的盒子，每个行框盒子前面有一个宽度为0，拥有该元素的font-size和line-height的看不见的幽灵空白节点，父元素的高度由幽灵空白节点和内联元素中line-height大的决定
 
+    未设置height时，单行文本高度比line-height大
+
     vertical-align的值
       抛开inherit类的全局属性，可以分为：
         线类：如baseline（默认）、top、middle、bottom
@@ -168,6 +460,23 @@
 
     vertical-align起作用的前提：只能应用内联元素和display为table-cell的元素（vertical-align 属性只能作用在 display 计算值为 inline、inline-block，inline-table或 table-cell 的元素上）
     对于table-cell的元素，vertical-align起作用的是table-cell元素自身
+
+    产生间隙的三大元凶：幽灵空白节点、line-height、vertical-align
+
+    inline-block与baseline
+    一个inline-block元素如果里面没有内联元素，或者overflow不是visible，则该元素的基线就是其margin底边缘；否则其基线就是元素里面最后一行内联元素的基线
+
+    vertical-align：top
+    内联元素：元素底部和行框盒子的顶端对齐
+    table-cell：元素底padding边缘和表格行的顶部对齐
+
+    vertical-align：middle
+    内联元素：元素的垂直中心点和行框盒子基线往上1/2 x-height处对齐
+    table-cell：单元格填充的盒子相对外面的表格行居中对齐
+
+    vertical-align：text-top 盒子顶部和父级内容区域的顶部对齐
+
+
 
    -->
   <div class="demo-height">
@@ -214,13 +523,117 @@
     <h3>内联元素line-height的大值特性</h3>
     <div class="test2">
       <div class="box1">
-        <span>span  line-height: 20px</span>
+        <span>span line-height: 20px</span>
       </div>
       <div class="box2">
-        <span>span  line-height: 96px</span>
+        <span>span line-height: 96px</span>
+      </div>
+    </div>
+  </div>
+  <div class="vertical-align">
+    <h3>单行文本高度比line-height大</h3>
+    <!-- 对于字符，font-size越大，基线位置越往下 “x”和“文本x”大小不一，而默认对齐方式为基线，彼此发生上下位移，位移足够大，会打破line-height的限制  -->
+    <div class="test1">
+      x
+      <span>文本x</span>
+    </div>
+    <h3>vertical-align未起作用？</h3>
+    <!--vertical-align在努力起作用 行框盒子前面的幽灵空白节点高度太小 -->
+    <input type="checkbox" name="" id="on">
+    <div class="test2">
+      <label for="on" class="checkbox" title="设置.test2的line-height"></label>
+      <img src="../img/image.jpg" alt="" height="96">
+    </div>
+    <h3>table-cell元素设置vertical-align作用的是本身</h3>
+    <div class="test3">
+      <h4>图片vertical-align</h4>
+      <div class="box box1">
+        <img src="../img/image.jpg" alt="" height="96">
+      </div>
+      <h4>table-cellvertical-align</h4>
+      <div class="box box2">
+        <img src="../img/image.jpg" alt="" height="96">
+      </div>
+    </div>
+    <h3>任意块级元素，内部有img，块级元素的高度比img大，图片下有间隙</h3>
+    <!-- 解决：
+      1. img块级化，一口气解决三大元凶
+      2. line-height足够小
+      3. font-size足够小
+      4. 改变img的vertical-align不为baseline   
+    -->
+    <input type="radio" name="solve" id="solve1">
+    <input type="radio" name="solve" id="solve2">
+    <input type="radio" name="solve" id="solve3">
+    <input type="radio" name="solve" id="solve4">
+    <input type="radio" name="solve" id="solve5">
+    <div class="test4">
+      <label for="solve1" class="radio" title="display: block"></label>
+      <label for="solve2" class="radio" title="line-height: 0"></label>
+      <label for="solve3" class="radio" title="font-size: 0"></label>
+      <label for="solve4" class="radio" title="vertical-align: 不为baseline"></label>
+      <label for="solve5" class="radio"></label>
+      <img src="../img/image.jpg" alt="" height="96">
+    </div>
+    <h3>内联特性导致margin无效（幽灵空白节点）</h3>
+    <div class="test5">
+      x
+      <img src="../img/image.jpg" alt="">
+    </div>
+  </div>
+  <div class="vertical-align-add">
+    <h3>inline-block与baseline</h3>
+    <div class="test1">
+      <img src="../img/image.jpg" alt="" width="96">
+      <img src="../img/image.jpg" alt="" width="96">
+      <img src="../img/image.jpg" alt="" width="96">
+      <img src="../img/image.jpg" alt="" width="96">
+      <i class="justify-fix"></i>
+      <i class="justify-fix"></i>
+      <i class="justify-fix"></i>
+    </div>
+    <h3>inline-block的baseline</h3>
+    <div class="test2">
+      <span class="dib-baseline"></span>
+      <span class="dib-baseline">xbaseline</span>
+    </div>
+    <h3>小图标对齐</h3>
+    <div class="test3">
+      <i class="icon icon-delete">删除</i>
+      删除
+    </div>
+    <h3>vertical-align：middle近似垂直居中</h3>
+    <div class="test4">
+      <div id="box" class="box">
+        <span class="wrap">
+          <img src="../img/image.jpg" alt="">
+        </span>x
+      </div>
+      <p>
+        <span class="dt">
+          修改字体<br>(16px~48px)
+        </span>
+        <input type="range" name="" id="range" min="16" max="48" value="16">
+      </p>
+    </div>
+    <h3>垂直水平居中</h3>
+    <div class="test5">
+      <div class="container">
+        <div class="dialog">
+          <div class="content">
+            <p>标题</p>
+            <img src="../img/image.jpg" alt="" width="200">
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </body>
-
+<script>
+  var range = document.querySelector("#range");
+  var box = document.querySelector(".vertical-align-add .test4 .box");
+  range.addEventListener("change", function() {
+    box.style.fontSize = this.value + "px";
+  })
+</script>
 </html>
