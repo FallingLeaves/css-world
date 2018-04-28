@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>流的破坏和保护</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    html {
+      overflow-y: scroll;
+    }
+
+    :root {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    :root body {
+      position: absolute;
+    }
+
+    body {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .float-left {
+      float: left;
+    }
+
+    .float-right {
+      float: right;
+    }
+
+    .float-demo-character .test1 {
+      overflow: hidden;
+    }
+
+    .float-demo-character .test1 .father {
+      width: 200px;
+    }
+
+    .float-demo-character .test1 .father img {
+      width: 128px;
+    }
+
+    .float-demo-character .test2 {
+      width: 200px;
+      margin: 0 auto;
+    }
+
+    .float-demo-character .test2 .father {
+      border: 1px solid aqua;
+    }
+
+    .float-demo-character .test2 .father img {
+      opacity: 0.5;
+    }
+
+    .float-demo-character .test2 .animate {
+      background: #a9c3da;
+      margin-left: -100px;
+    }
+
+    .float-demo-character .test2 .animate::first-line {
+      background: red;
+      color: #fff;
+    }
+
+    .float-demo-character .test3 {
+      width: 300px;
+      margin: 0 auto;
+    }
+
+    .float-demo-character .test3 .father {
+      height: 60px;
+      border: 1px solid aqua;
+    }
+
+    .float-demo-character .test3 .father::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    .float-demo-character .test3 .father img {
+      height: 60px;
+    }
+
+    .float-demo-character .test4 {
+      width: 200px;
+      margin: 0 auto;
+    }
+
+    .float-demo-character .test5 .father {
+      width: 300px;
+      border: 1px solid aqua;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .float-demo-character .test5 img {
+      width: 70px;
+    }
+
+    .float-demo-character .test5 p {
+      margin-left: 80px;
+    }
+
+    .float-demo-character .test6 .title {
+      margin: 0 70px;
+      text-align: center;
+    }
+
+    .clear li {
+      width: 20px;
+      height: 20px;
+      margin: 5px;
+      background: aqua;
+    }
+
+    .clear li:nth-of-type(3) {
+      clear: both;
+      float: none;
+      margin-top: -9999px;
+      /* margin-top负值无效 */
+    }
+
+    .overflow .test1 {
+      width: 300px;
+      height: 200px;
+      padding: 10px;
+      border: 10px solid aqua;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 
+    1. 魔鬼属性float
+      float的本质和特性
+        浮动的本质：为实现文字环绕的效果
+          float布局———砌砖头式的刚性布局，缺少弹性 
+        浮动的特性：
+          1. 包裹性  包裹和自适应，要浮动元素的最大宽度自适应父元素的宽度，其“首选最小宽度”比父元素宽度小
+          2. 块级化和格式化上下文  一旦float的值不为none，其display的计算值为block或table
+      float的作用机制：
+        行框盒子和浮动元素的不可重叠性
+        文字环绕效果由父级高度塌陷和行框盒子区域限制共同作用的
+    2. float的克星clear
+        1. 凡是可以用clear:left或clear:right的地方都可以用clear:both替换
+        clear属性是让自身不能和前面的浮动元素相邻
+        2. clear只能作用块级元素
+          如果clear:both元素前面的元素是float元素，该元素margin-top负值无效
+          clear:both后面的元素依然可能发生文字环绕现象
+    3. css世界的结界——BFC
+      表现：
+        如果一个元素具有BFC，内部子元素再怎么翻江倒海，都不会影响外部的元素。所以BFC元素不会发生margin重叠，可以清除浮动
+      BFC的触发，常见情形：
+        1. <html>根元素
+        2. float的值不为none
+        3. overflow的值为auto、scroll、hidden
+        4. display的值为table-cell、table-caption和inline-block中任意一种
+        5. position值不为relative和static
+      最佳结界——overflow
+        overflow裁剪界限border box
+        除非 overflow-x 和 overflow-y 的属性值都是 visible，否则 visible 会当成 auto 来解析。换句话说，永远不可能实现一个方向溢出剪裁或滚动，另一方向内容溢出显示的效果。
+      overflow与滚动条
+        1. 在PC端默认滚动条来自<html> document.documentElement.scrollTop获取滚动高度
+           在移动端可能要用document.body.scrollTop获取滚动高度
+        2. 滚动条会占用容器可用的宽或高
+        3. 滚动条不发生晃动的技巧
+             html {
+              overflow-y: scroll;
+            }
+
+            :root {
+              overflow-y: auto;
+              overflow-x: hidden;
+            }
+
+            :root body {
+              position: absolute;
+            }
+
+            body {
+              width: 100%;
+              overflow: hidden;
+            }
+        4. overflow与锚点定位
+            
+   -->
+
+  <div class="float-demo-character">
+    <h3>包裹性</h3>
+    <div class="test1">
+      <div class="father">
+        <div class="float-left">
+          <img src="../img/image.jpg" alt=""> 文字和字母的区别
+        </div>
+        <div class="float-left">
+          <img src="../img/image.jpg" alt=""> Loremipsumdolorsit, ametconsecteturadipisicingelit.
+        </div>
+      </div>
+    </div>
+    <h3>float：高度塌陷</h3>
+    <div class="test2">
+      <div class="father">
+        <img src="../img/image.jpg" alt="" width="90" class="float-left">
+      </div>
+      <p class="animate">小猫1、小猫2、小猫3、小猫4、小猫5、小猫6</p>
+    </div>
+    <h3>高度限制下依然文字环绕</h3>
+    <div class="test3">
+      <div class="father">
+        <div class="float-left">
+          <img src="../img/image.jpg">
+        </div>
+        我是帅哥，好巧啊，我也是帅哥，原来看这本书的人都是帅哥~
+      </div>
+      <div>虽然你很帅，但是我对你不感兴趣。</div>
+    </div>
+    <h3>位置在哪？</h3>
+    <div class="test4">
+      <h3>标题足够长足够长足够长足够长足够长足够长
+        <a href="javascript:" class="float-right">更多</a>
+      </h3>
+    </div>
+    <h3>一侧定宽的两栏布局</h3>
+    <div class="test5">
+      <div class="father">
+        <img src="../img/image.jpg" alt="" class="float-left">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor</p>
+      </div>
+    </div>
+    <h3>左中右布局</h3>
+    <div class="test6">
+      <a href class="float-left">&laquo; 上一章</a>
+      <a href class="float-right">下一章 &raquo;</a>
+      <h3 class="title">第 112 章 动物环绕</h3>
+    </div>
+  </div>
+
+  <div class="clear">
+    <h3>怎样排列</h3>
+    <ul>
+      <li class="float-left"> 1</li>
+      <li class="float-left"> 2</li>
+      <li class="float-left"> 3</li>
+      <li class="float-left"> 4</li>
+      <li class="float-left"> 5</li>
+      <li class="float-left"> 6</li>
+      <li class="float-left"> 7</li>
+    </ul>
+  </div>
+
+  <div class="overflow">
+    <!-- 滚动元素不要设置padding-bottom Chrome和Firefox解析不一样 -->
+    <h3>overflow裁剪界限border box</h3>
+    <div class="test1">
+      <img src="../img/winter.jpg" alt="">
+    </div>
+  </div>
+</body>
+
+</html>
