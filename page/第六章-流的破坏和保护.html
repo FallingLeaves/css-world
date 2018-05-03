@@ -517,10 +517,34 @@
             否则，包含块由该祖先的 padding box 边界形成。
             如果没有符合条件的祖先元素，则包含块是初始包含块。
         定位到内容区域时，间距不使用padding撑开，而使用透明的border
-      具有相对特性的无依赖absolute绝对定位
+    6. 具有相对特性的无依赖absolute绝对定位
 				absolute是非常独立的css属性值，其样式和形式不依赖其他任何css属性就可以完成,不一定需要子绝父相
 			absolute与text-align
 				text-align改变了absolute元素的位置
+					幽灵空白节点、无依赖绝对定位
+		  absolute与overflow
+				如果overflow 不是定位元素，同时绝对定位元素和 overflow 容器之间也没有定位元素，则overflow 无法对 absolute 元素进行剪裁。
+			absolute与clip
+				clip要起作用，元素必须是绝对或固定定位
+				clip: rect(top right bottom left) 标准的加逗号，推荐不加，支持ie6/7
+				固定定位的裁剪
+				最佳可访问性隐藏（隐藏logo、SEO）
+				  clip: rect(0 0 0 0)
+				clip隐藏仅仅决定了那部分可见，非可见部分无法响应点击事件等，虽然视觉不可见，但元素的尺寸在，Chrome会保留滚动条，IE和Firefox不会
+		7. absolute的流体特性
+			当absolute遇到top、right、bottom、left时，才是真正的绝对定位元素，仅设置一个方向时，另一个方向保持相对性
+			对立方位同时设置时，表现流体性
+			当绝对定位元素处于流体状态时，各个盒模型属性的解析和普通流体元素是一样的，margin负值可以扩大尺寸，margin：auto可以居中
+		8. relative
+			特性：
+				1. 相对自身偏移，位移相对自身，百分比的值是相对于包含块的，
+				2. 无侵入，一般不会对周围元素的布局有影响
+			同时设置对立属性时，表现“你死我活”，top和bottom同时存在，bottom干掉，left和right同时存在，right毙命
+			最小化影响原则
+				1. 尽量不要用relative，利用absolute的无依赖绝对定位
+				2. 使用relative时，务必最小化
+		9. fixed
+		  absolute/fixed没有设置left、top、right、bottom的相对定位特性
    -->
 
 	<div class="float-demo-character">
@@ -692,10 +716,57 @@
 			</div>
 		</div>
 		<h3>text-align改变absolute元素的位置</h3>
+		<!-- 
+			1. img是内联水平元素，会生成幽灵空白节点，幽灵空白节点受text-align：center影响，居中
+			2. img设置absolute，表现无依赖绝对定位，排列在幽灵空白节点后面
+			3. 只有原本是内联水平元素，绝对定位后，才会受text-align影响；为块级元素的“无依赖绝对定位”是掉在下面显示的，水平方向上并无可“依赖”的内联元素，text-align 属性自然鞭长莫及。
+		 -->
 		<div class="test5">
 			<p>
-				x<img src="../img/image.jpg" alt="" width="128">
+				x
+				<img src="../img/image.jpg" alt="" width="128">
 			</p>
+		</div>
+		<h3>图片不被裁剪</h3>
+		<div class="test6">
+			<div style="overflow: hidden;height: 200px;background: aqua;">
+				<img src="../img/image.jpg" alt="" style="position: absolute;">
+			</div>
+			<div style="position: relative;">
+				<div style="overflow: hidden;height: 200px;background: aqua;">
+					<img src="../img/image.jpg" alt="" style="position: absolute;">
+				</div>
+			</div>
+		</div>
+		<h3>图片裁剪</h3>
+		<div class="test7">
+			<div style="overflow: hidden;height: 200px;background: aqua;position: relative;">
+				<img src="../img/image.jpg" alt="" style="position: absolute;">
+			</div>
+			<div style="overflow: hidden;">
+				<div style="position: relative;height: 200px;background: aqua;">
+					<img src="../img/image.jpg" alt="" style="position: absolute;">
+				</div>
+			</div>
+		</div>
+		<h3>不会出现滚动条,绝对定位元素不跟随滚动</h3>
+		<div class="test8">
+			<div style="overflow: auto;height: 100px;background: aqua;">
+				<img src="../img/image.jpg" alt="" height="200" style="position: absolute;mix-blend-mode: darken;">
+				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint quia earum delectus aperiam provident corrupti temporibus
+					consequuntur accusamus minus fugiat ipsam officia quam autem dicta ea exercitationem quidem, nemo cum neque illo. Explicabo
+					consectetur doloremque reiciendis dicta architecto recusandae quis dolore ab praesentium voluptatibus distinctio, odit
+					soluta adipisci nam? Laudantium, deserunt qui ex nostrum minus quam reprehenderit eum odio est. Fuga facere in rerum
+					commodi ab beatae omnis! Doloribus, ducimus accusantium, eos ab tenetur voluptate nemo voluptatibus quaerat animi amet
+					blanditiis ut dignissimos. Maiores ipsam in, facere voluptates, voluptas officia dolor doloremque optio ullam veritatis
+					labore quas modi quam debitis!</p>
+			</div>
+		</div>
+		<h3>absolute设置对立属性时的流体性</h3>
+		<div class="test9">
+			<div style="height: 200px;position: relative;">
+				<img src="../img/image.jpg" alt="" style="position:absolute;width:100px;left:0;right:0;top:0;bottom:0;margin:auto;">
+			</div>
 		</div>
 	</div>
 </body>
