@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>css世界层叠规则</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .demo {
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    .content {
+      width: 300px;
+      margin: 1em auto;
+      text-align: left;
+    }
+
+    .content img {
+      width: 300px;
+    }
+
+    img[src="../img/winter.jpg"] {
+      margin-left: 20px;
+    }
+
+    .fade-text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      line-height: 30px;
+      background-color: rgba(0, 0, 0, .5);
+      color: #fff;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .relative {
+      position: relative;
+    }
+
+    .fade-img {
+      animation: fade 2s 2s infinite;
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    #fade-input {
+      position: absolute;
+      /* opacity: 0; */
+      clip: rect(0 0 0 0);
+    }
+
+    #fade-input+label {
+      position: absolute;
+      right: 0;
+      width: 50px;
+      height: 50px;
+      background-color: aqua;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    #fade-input:checked+label::before {
+      content: '✔';
+      display: block;
+      font-size: 50px;
+      line-height: 1;
+      color: #00ae8b;
+    }
+
+    #fade-input:checked~.content p {
+      z-index: 1;
+    }
+
+    .bg-blue {
+      background: blue;
+    }
+
+    .container {
+      background: #666;
+      padding: 4em 0;
+      position: relative;
+      text-align: left;
+      z-index: 0;
+      /* 创建层叠上下文 */
+    }
+
+    .page {
+      width: 600px;
+      max-width: 90%;
+      margin: 0 auto;
+      padding: 2em 0;
+      background-color: #f4f39e;
+      background: linear-gradient(to bottom, #f4f39e, #f5da41 60%, #fe6);
+      box-shadow: 0 2px 10px 1px rgba(0, 0, 0, .2);
+      text-shadow: 0 1px 0 #f6ef97;
+      position: relative;
+    }
+
+    /* 边角卷边阴影 */
+    .page:before,
+    .page:after {
+      width: 90%;
+      height: 20%;
+      content: "";
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .3);
+      position: absolute;
+      bottom: 0;
+      z-index: -1;
+      /* 层叠上下文灰色背景上，黄色纸张下 */
+    }
+
+    .page:before {
+      transform: skew(-15deg) rotate(-5deg);
+      transform-origin: left bottom;
+      left: 0;
+    }
+
+    .page:after {
+      transform: skew(15deg) rotate(5deg);
+      transform-origin: right bottom;
+      right: 0;
+    }
+
+    .title {
+      text-align: center;
+    }
+
+    .title:after {
+      content: "";
+      width: 30%;
+      height: 30px;
+      border: 1px solid rgba(200, 200, 200, .8);
+      background: rgba(254, 254, 254, .6);
+      box-shadow: 0px 0 3px rgba(0, 0, 0, 0.1);
+      transform: translateX(-50%) rotate(-5deg);
+      position: absolute;
+      left: 50%;
+      top: -15px;
+    }
+
+    .page p {
+      line-height: 1.8;
+      margin: 1em 0;
+      padding: 0 2em;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 
+    1. z-index只是css世界层叠规则中的一叶扁舟
+        z-index只能作用定位元素和flex布局的子元素，页面中多数是非定位元素
+
+    2. css世界的层叠上下文和层叠水平
+        层叠上下文：HTML中的三维概念，如果一个元素有层叠上下文，就说该元素在z轴高人一等，可以理解为层叠结界，自成一个小世界。这个小世界可能包含其他的层叠结界，或在其他层叠结界中。
+
+        层叠水平：决定了同一个层叠上下文中，元素在z轴上的显示顺序。普通元素的层叠水平探讨只考虑当前层叠上下文，因为普通元素的层叠水平无法突破层叠结界和结界外的元素比较层叠水平
+
+        层叠顺序：表示元素发生层叠时，有着特定的垂直显示顺序。
+            css3前的层叠顺序
+            层叠上下文background/border——>负z-index——>block块状水平盒子——>float浮动盒子——>inline水平盒子——>z-index：auto或看成z-index：0——>正z-index
+
+        层叠准则：
+            1. 谁大谁上：当明显的层叠水平标识时，如生效的z-index，在同一个层叠上下文领域，层叠水平大的覆盖小的。
+            2. 后来居上：当元素的层叠水平一致，处于同一层叠顺序时，DOM流后面的覆盖前面的
+
+        层叠上下文的特性：
+            1. 层叠上下文的层叠水平比普通元素高
+            2. 层叠上下文可以阻断元素的混合模式
+            3. 层叠上下文可以嵌套，内部层叠上下文及其所有子元素受制于外部的层叠上下文
+            4. 每个层叠上下文与兄弟元素独立
+            5. 每个层叠上下文是自成体系的，当元素发生层叠时，整个元素被认为是在父层叠上下文的层叠顺序中
+
+        层叠上下文的创建
+            1. 天生派，页面根元素天生具有层叠上下文，称为根层叠上下文
+            2. 正统派，z-index为数值的定位元素的传统层叠上下文
+            3. 扩招派，其他css3属性
+
+            根层叠上下文
+              指的是根元素可以看成html元素，页面所有元素一定至少处于一个层叠结界中
+            
+            z-index和传统层叠上下文
+
+            css3与新时代的层叠上下文
+            1. 元素为flex布局，同时z-index不为auto
+            2. 元素的opacity值不为1
+            3. 元素的transform的值不为none
+            4. 元素 mix-blend-mode 值不是 normal
+            5. 元素的 filter 值不是 none
+            6. 元素的 isolation 值是 isolate
+            7. 元素的 will-change 属性值为上面 2～6 的任意一个（如 will-change:opacity、will-chang:transform 等）
+            8. 元素的-webkit-overflow-scrolling 设为 touch
+
+    3. 层叠上下文与层叠顺序
+      （1）如果层叠上下文元素不依赖 z-index 数值，则其层叠顺序是 z-index:auto，可看成 z:index:0 级别；
+      （2）如果层叠上下文元素依赖 z-index 数值，则其层叠顺序由 z-index 值决定。
+
+        层叠上下文background/border——>负z-index——>block块状水平盒子——>float浮动盒子——>inline水平盒子——>z-index：auto或看成z-index：0不依赖z-index的层叠上下文——>正z-index
+
+    4. z-index的负值
+      z-index 负值渲染的过程就是一个寻找第一个层叠上下文元素的过程，然后层叠顺序止步于这个层叠上下文元素
+      可访问性隐藏、ie8模拟多背景（利用伪类最多3个）
+
+    5. z-index不犯二准则
+      对于非浮层元素，避免设置 z-index 值，z-index 值没有任何道理需要超过 2。（不包括那些在页面上飘来飘去的元素定位，弹框、出错提示、一些下拉效果等都不受这一准则限制）
+      定位元素一旦设置z-index，就从普通定位元素变成层叠上下文元素，相互间的层叠顺序发生根本变化
+      避免z-index一山比一山高的样式混乱问题
+  -->
+  <h3>z-index和传统层叠上下文</h3>
+  <div class="demo">
+    <!-- 
+      z-index：auto的普通定位元素，里面的img层叠比较不受父元素影响，直接谁大谁上的规则比较。而z-index：0时，创建层叠上下文，自成体系，两个img的层叠比较优先比较父元素的层叠顺序，由于父元素z-index都是0，遵循后来居上的规则
+      ie6/7 z-index：auto 也会创建层叠上下文  webkit内核浏览器fixed 天然层叠上下文不需z-index为数值
+    -->
+    <div class="content">
+      <div style="position: relative;z-index: auto;">
+        <img src="../img/spring.jpg" alt="" style="position: absolute;z-index: 2;">
+      </div>
+      <div style="position: relative;z-index: auto;">
+        <img src="../img/winter.jpg" alt="" style="position: relative;z-index: 1;">
+      </div>
+    </div>
+    <div class="content">
+      <div style="position: relative;z-index: 0;">
+        <img src="../img/spring.jpg" alt="" style="position: absolute;z-index: 2;">
+      </div>
+      <div style="position: relative;z-index: 0;">
+        <img src="../img/winter.jpg" alt="" style="position: relative;z-index: 1;">
+      </div>
+    </div>
+  </div>
+  <h3>后来居上</h3>
+  <div class="demo">
+    <div class="content">
+      <img src="../img/spring.jpg" alt="" style="position: absolute;">
+      <img src="../img/winter.jpg" alt="" style="position: relative;">
+    </div>
+    <div class="content">
+      <img src="../img/winter.jpg" alt="" style="position: absolute;">
+      <img src="../img/spring.jpg" alt="" style="position: relative;">
+    </div>
+  </div>
+  <h3>奇怪的淡入淡出</h3>
+  <div class="demo">
+    <input type="checkbox" name="" id="fade-input">
+    <label for="fade-input"></label>
+    <div class="content relative" style="line-height: 0">
+      <!-- 
+        图片不是瞬间opacity为0，遵循后来居上的规则
+        调整DOM流的顺序或提高文字的层叠顺序 
+      -->
+      <p class="fade-text">只有图片淡入淡出</p>
+      <img src="../img/image.jpg" alt="" class="fade-img">
+    </div>
+  </div>
+  <h3>z-index负值</h3>
+  <div class="demo">
+    <div class="content">
+      <h4>.box是非层叠上下文</h4>
+      <div class="box bg-blue">
+        <img src="../img/image.jpg" alt="" class="relative" style="right: -30px;z-index: -1;">
+      </div>
+      <h4>.box是层叠上下文</h4>
+      <div class="box bg-blue" style="transform: scale(1);">
+        <img src="../img/image.jpg" alt="" class="relative" style="right: -30px;z-index: -1;">
+      </div>
+    </div>
+  </div>
+  <h3>z-index负值与纸张卷边阴影模拟</h3>
+  <div class="demo">
+    <div class="container">
+      <div class="page">
+        <h4 class="title">一些实例文字</h4>
+        <p>有个老头儿的狗死了，老头就把死狗打包托运准备带回家乡厚葬。但是托运的时候机场的人不知道是死的，下飞机的时候发现是死的，吓坏了。以为把狗托运死了。于是就派人去附近狗市买了一个一模一样的。后来这老头打开行李发现狗活了。于是老头给吓死了！</p>
+        <p>本来抱着大哭一场的念头去观摩将爱情进行到底，结果从头笑到尾。波尔多那一场戏，徐静蕾对李亚鹏说："带我走吧。"李亚鹏答："大象怎么办？"（大象是徐静蕾的儿子）。结果您猜怎么着？邻座一个观众很严肃的说：装冰箱呀！</p>
+        <p>今天全家看湖南卫视播放的古装片的时候，突然很脑残的问我爸：爸，你说我为什么要叫你做爸呢？——我爸弱弱的回答：你也可以叫我阿玛。。。</p>
+        <p>病童："打针前为什么要擦棉球？" 父亲："那是酒精，先把你的屁股擦醉了，再打针就不痛了。" 病童："可是我还是痛呀！" 父亲："那是因为你屁股的酒量好啊！"</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
