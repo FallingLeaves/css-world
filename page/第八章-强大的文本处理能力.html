@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>强大的文本处理能力</title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		.demo {
+			padding: 20px 0;
+			text-align: center;
+		}
+
+		.demo-p {
+			font-size: 18px;
+			position: relative;
+			animation: fontSize 5s ease-in-out infinite alternate;
+		}
+
+		@keyframes fontSize {
+			to {
+				font-size: 60px;
+			}
+		}
+
+		.demo-p::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 50%;
+			border-top: 1px solid;
+			color: aqua;
+		}
+
+		.demo-p img {
+			position: relative;
+			width: 16px;
+			height: 16px;
+			top: 8px;
+			/* vertical-align: .6ex; */
+			vertical-align: 25%;
+		}
+
+		.demo:nth-of-type(3) div {
+			margin: 0 auto;
+			font-family: simsun monospace;
+			font-size: 16px;
+			width: 0;
+			overflow: hidden;
+			white-space: nowrap;
+			animation: move 9s steps(9, start) infinite;
+		}
+
+		@keyframes move {
+			0% {
+				width: 0;
+			}
+			100% {
+				width: 9em;
+			}
+		}
+
+		@font-face {
+			font-family: ICON;
+			src: url("../fonts/icon-large.eot");
+			src: local("☺"),
+			url("../fonts/icon-large.woff");
+			font-weight: 700;
+		}
+
+		@font-face {
+			font-family: ICON;
+			src: url("../fonts/icon-medium.eot");
+			src: local("☺"),
+			url("../fonts/icon-medium.woff");
+			font-weight: 400;
+		}
+
+		@font-face {
+			font-family: ICON;
+			src: url("../fonts/icon-small.eot");
+			src: local("☺"),
+			url("../fonts/icon-small.woff");
+			font-weight: 100;
+		}
+
+		.icon {
+			font-family: ICON;
+			display: inline-block;
+			background: #efefef;
+			width: 1em;
+			line-height: 1;
+			font-style: normal;
+		}
+
+		.icon-large {
+			font-weight: 700;
+			font-size: 128px;
+		}
+
+		.icon-medium {
+			font-weight: 400;
+			font-size: 64px;
+		}
+
+		.icon-small {
+			font-weight: 100;
+			font-size: 16px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- 
+    1. font-size和vertical-align
+      line-height部分类别属性是相对于font-size计算的，vertical-align的百分比是相对于line-height的
+
+     font-size和ex、em、rem
+      ex：字母x的高度
+      em：字模的高度，可以理解为：在 CSS 中，1em 的计算值等同于当前元素所在的 font-size 计算值，可以将其想象成当前元素中（如果有）汉字的高度
+      rem：相对于根元素
+
+     font-size关键字属性值
+      font-size支持长度值、百分比，还支持关键字
+      关键字：
+        （1）相对尺寸关键字：相对于当前元素font-size
+            larger：<big>元素的默认字体大小
+            smaller：<small>元素的默认字体大小
+        （2）绝对尺寸关键字
+            xx-large: <h1>
+            x-large: <h2>
+            large: <h3>近似
+            medium：<h4>
+            small: <h5>近似
+            x-small: <h6>近似
+            xx-small: 无对应的HTML元素
+      建议：
+					1. 定宽的桌面端，针对1200px的，适配到800px，可以保证至少有1.5倍的缩放空间
+					2. 在图文内容为主的重要局部区域使用可缩放的 font-size 处理即可
+							容器设置 font-size：medium
+
+		 font-size：0与文本的隐藏  
+		
+		2. font-family
+			支持属性值：
+				  字体名：例如 font-family：simsun
+					字体族：
+							• serif：衬线字体。
+							• sans-serif：无衬线字体。
+							• monospace：等宽字体。
+							• cursive：手写字体。
+							• fantasy：奇幻字体。
+							• system-ui：系统 UI 字体。
+							字体族最好写在字体最后面
+			ch: css3单位  1ch = 0字符的宽度
+
+		3. font-weight字体粗细程度
+			常用的：
+					normal bold
+			相对于父级
+					lighter bolder
+			精细：
+					100~900的整数，设置700才会变粗，好像css无效，是因为电脑系统中缺乏对应粗细的字体
+		
+		4. font-style字体斜或正
+			normal：正常
+			italic:	当前字体的斜体字，若没有对应的斜体字，解析为oblique
+			oblique：文字倾斜
+
+		5. font的缩写
+			[ [ font-style || font-variant || font-weight ]? font-size [ / line-height ]?font-family ] 
+			font缩写会破坏部分属性的继承性
+			font的关键字
+				font:caption | icon | menu | message-box | small-caption | status-bar 
+			让系统用各自引以为傲的字体（三选一）
+					html { font: menu; }
+					body { font-size: 16px; } 
+					html { font: small-caption; }
+					body { font-size: 16px; }
+					html { font: status-bar; }
+					body { font-size: 16px; }
+		
+		6. @font face规则
+			@font-face {
+				font-family: 'example';
+				src: url(example.ttf);
+				font-style: normal;		//多余
+				font-weight: normal;	//多余
+				unicode-range: U+0025-00FF;
+				font-variant: small-caps;   //暂不管
+				font-stretch: expanded;			//暂不管
+				font-feature-settings："liga1" on;		//暂不管
+			} 
+			font-family：可以看成字体变量，随意命名，最好加“”，不建议使用系统同名的字体名称
+			src：引入的字体资源，local()引用系统字体，ie9及以上支持，url()引用外部字体
+					 常见写法
+					 	src: url('icon.eot') format('eot');
+						src: url('icon.eot?#iefix') format('embedded-opentype'),
+								url('icon.woff2') format("woff2")
+								url('icon.woff') format("woff"),
+								url('icon.ttf') format("typetrue"),
+								url('icon.svg#icon') format('svg'); 
+
+						.svg文件是为兼容iOS4.1以前版本
+						.eot文件是IE私有，所有IE都支持，IE6~8只支持.eot文件字体
+						.woff文件专门为web开发设计的字体格式，Android4.4以后全支持，ie9开始支持
+						.woff2文件比.woff更小的字体格式，仅Chrome和Firefox支持较好
+						.ttf文件系统字体使用较多，web也可使用，老版Android也支持
+
+						常见写法会让IE9及以后的，一直使用eot格式字体
+						src: url('icon.eot') format('eot');
+						src: local('☺'),
+								url('icon.woff2') format("woff2")
+								url('icon.woff') format("woff"),
+								url('icon.ttf') format("typetrue");
+						
+						?#iefix的作用  
+							ie9以前的版本，src中包含多个url时，会当做一个字符解析而返回404。因此把eot格式放前面，在路径后面加？，ie9前的会把？后的当做参数
+						两个src
+							兼容模式的ie7、8不认识？的解决方案，导致第二个src无法解析
+						format()功能符
+							让浏览器提前知道字体格式，决定是否加载这个字体
+
+					优化：
+					@font-face {
+						font-family: ICON;
+						src: url('icon.eot');
+						src: local('☺'),
+								url('icon.woff2') format("woff2"),
+								url('icon.woff') format("woff"),
+								url('icon.ttf');
+					} 
+			
+			font-style为解决同字体的斜体格式
+			font-weight定义不同字重使用不同字体
+			unicode-range让特定的字符或特定范围的字符使用指定的字体 ie8不支持
+
+			@font-face与字体图标（推荐使用svg）
+					本质：字符集和图形的一种映射关系
+					1. 原始字符与图形相差很大，加载慢时，会出现变化的过程，体验不好，使用内联样式，但字体文件较大，不好
+					2. 原始字符的x-height和最终图形的x-height不一样，影响内联元素的垂直对齐
+					3. 原始字符的ch和最终图形的ch不一样，出现内联元素的水平晃动，需要设置图标的具体宽度
+
+		7. 文本控制
+					text-indent与内联元素的缩进
+						text-indent负值与文本隐藏，不建议设置很大的负值
+							可能会滚屏卡顿
+							智能阅读设备不会读取缩进在屏幕之外的内容
+							
+							部分浏览器会影响元素的outline区域，通常需设置overflow：hidden
+						text-indent的百分比是相对当前元素的包含块计算的
+
+
+
+
+
+
+
+   -->
+	<h3>动态font-size的图片垂直居中</h3>
+	<div class="demo">
+		<p class="demo-p">
+			文本
+			<img src="../img/delete.png" alt="">
+		</p>
+	</div>
+	<h3>不换行</h3>
+	<div class="demo">
+		<p style="width: 160px;line-height: 1;background-color: #eee;">文本文本文本文本文本</p>
+	</div>
+	<h3>等宽字体与动画</h3>
+	<div class="demo">
+		<div>红鲤鱼与绿鲤鱼与鱼</div>
+	</div>
+	<h3>font-weight和图标</h3>
+	<div class="demo">
+		<p style="padding: 1em 0;">
+			<!-- 推荐放在伪元素中 -->
+			<i class="icon icon-small">&#x1f3a4;</i>
+			<i class="icon icon-medium">&#x1f3a4;</i>
+			<i class="icon icon-large">&#x1f3a4;</i>
+			<i>&#x1f3a4;</i>
+			<span>&#x1f3a4;</span>
+		</p>
+	</div>
+</body>
+
+</html>
