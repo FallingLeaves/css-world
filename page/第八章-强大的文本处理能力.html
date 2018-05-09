@@ -17,6 +17,10 @@
 			text-align: center;
 		}
 
+		.tl {
+			text-align: left;
+		}
+
 		.demo-p {
 			font-size: 18px;
 			position: relative;
@@ -114,6 +118,77 @@
 			font-weight: 100;
 			font-size: 16px;
 		}
+
+		input[name="indent"] {
+			position: absolute;
+			opacity: 0;
+		}
+
+		.indent-label {
+			position: absolute;
+			width: 50px;
+			height: 50px;
+			background-color: aqua;
+			border-radius: 4px;
+			text-align: center;
+			cursor: pointer;
+		}
+
+		.indent-label:nth-of-type(1) {
+			left: 50px;
+		}
+
+		.indent-label:nth-of-type(2) {
+			left: 150px;
+		}
+
+		.indent-label:nth-of-type(3) {
+			left: 250px;
+		}
+
+		#indent01:checked~.indent-label:nth-of-type(1)::after,
+		#indent02:checked~.indent-label:nth-of-type(2)::after,
+		#indent03:checked~.indent-label:nth-of-type(3)::after {
+			content: '✔';
+			display: block;
+			font-size: 50px;
+			line-height: 1;
+			color: #00ae8b;
+		}
+
+		#indent01:checked~.demo {
+			text-indent: 2em;
+		}
+
+		#indent02:checked~.demo span {
+			display: inline-block;
+		}
+
+		#indent03:checked~.demo span {
+			display: inline-table;
+		}
+
+		.demo .title {
+			width: 8em;
+			margin: auto;
+			white-space: nowrap;
+			animation: textIn 1s both infinite;
+			letter-spacing: -200px
+		}
+
+		@keyframes textIn {
+			0% {
+				opacity: 0;
+				letter-spacing: -200px;
+			}
+			60% {
+				letter-spacing: 5px;
+			}
+			100% {
+				opacity: 1;
+				letter-spacing: 0;
+			}
+		}
 	</style>
 </head>
 
@@ -203,7 +278,7 @@
 					 常见写法
 					 	src: url('icon.eot') format('eot');
 						src: url('icon.eot?#iefix') format('embedded-opentype'),
-								url('icon.woff2') format("woff2")
+								url('icon.woff2') format("woff2"),
 								url('icon.woff') format("woff"),
 								url('icon.ttf') format("typetrue"),
 								url('icon.svg#icon') format('svg'); 
@@ -249,15 +324,29 @@
 					3. 原始字符的ch和最终图形的ch不一样，出现内联元素的水平晃动，需要设置图标的具体宽度
 
 		7. 文本控制
-					text-indent与内联元素的缩进
-						text-indent负值与文本隐藏，不建议设置很大的负值
-							可能会滚屏卡顿
-							智能阅读设备不会读取缩进在屏幕之外的内容
-							
-							部分浏览器会影响元素的outline区域，通常需设置overflow：hidden
-						text-indent的百分比是相对当前元素的包含块计算的
-
-
+				1.	text-indent与内联元素的缩进
+							text-indent负值与文本隐藏，不建议设置很大的负值
+								可能会滚屏卡顿
+								智能阅读设备不会读取缩进在屏幕之外的内容
+								
+								部分浏览器会影响元素的outline区域，通常需设置overflow：hidden
+							text-indent的百分比是相对当前元素的包含块计算的。
+							text-indent仅对第一行内联盒子内容有效。
+							非替换元素以外的display计算值为inline的内联元素，设置text-indent无效，如果计算值为inline-block或inline-table则有效。因此父级块状元素设置text-indent，子元素需重置。
+							input标签按钮text-indent无效。
+							button标签按钮text-indent有效，但存在兼容性。
+							input和textarea输入框的text-indent在低版本IE有兼容问题。
+				2.	letter-space与字符间距
+							字符包括：英文字母，汉字，空格等
+							特性：
+								1.	继承性
+								2.	默认值为normal，虽然正常情况下，normal的计算值为0，有些情况下，normal的计算值会调整适应排版
+								3.	支持负值，足够大，字符会重叠，甚至反向（非IE）
+											letter-spacing 负值仅能让字符重叠，但是不能让替换元素或者 inline-block/inline-table 元素发生重叠。
+								4.	letter-space的值和text-indent一样，无论多大或多小，第一行一定会保留至少一个字符。在默认左对齐时，无论设置何值，第一个字符纹丝不动。
+								5.	支持小数。
+								6.	暂不支持百分比。
+				3.	word-space与单词间距
 
 
 
@@ -289,6 +378,25 @@
 			<i>&#x1f3a4;</i>
 			<span>&#x1f3a4;</span>
 		</p>
+	</div>
+	<h3>非替换元素以外的display计算值为inline的内联元素，设置text-indent无效</h3>
+	<input type="radio" name="indent" id="indent01">
+	<input type="radio" name="indent" id="indent02">
+	<input type="radio" name="indent" id="indent03">
+	<label for="indent01" title="块级父元素设置text-indent" class="indent-label"></label>
+	<label for="indent02" title="子元素设置inline-block" class="indent-label"></label>
+	<label for="indent03" title="子元素设置inline-table" class="indent-label"></label>
+	<div class="demo tl" style="padding-top: 60px;">
+		<span style="text-indent: 2em;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam facere delectus sint minima suscipit adipisci. Eius facilis
+			iste ducimus id ipsam magni reiciendis, debitis ipsa aliquam ipsum magnam impedit esse.</span>
+	</div>
+	<h3>letter-space负值，文字反向</h3>
+	<div class="demo">
+		<p style="letter-spacing: -2em;">文字反向</p>
+	</div>
+	<h3>letter-spacing与字符动效</h3>
+	<div class="demo">
+		<div class="title tl">我是标题文字内容</div>
 	</div>
 </body>
 
