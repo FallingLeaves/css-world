@@ -12,6 +12,14 @@
 			margin: 0;
 		}
 
+		ul {
+			list-style: none;
+		}
+
+		a {
+			text-decoration: none;
+		}
+
 		.demo {
 			padding: 20px 0;
 			text-align: center;
@@ -189,6 +197,149 @@
 				letter-spacing: 0;
 			}
 		}
+
+		#box {
+			width: 300px;
+			height: 100px;
+			margin: 30px auto;
+			position: relative;
+			overflow: hidden;
+		}
+
+		#box>ul {
+			position: absolute;
+			left: 0;
+			transition: left .2s;
+			white-space: nowrap;
+			height: 100%;
+		}
+
+		#box>ul>li {
+			display: inline-block;
+			height: 100%;
+		}
+
+		#box img {
+			/* width: 128px; */
+			height: 100%;
+		}
+
+		.btn {
+			position: absolute;
+			font-size: 12px;
+			background: white;
+			padding: 2px 5px;
+			top: 50%;
+			transform: translateY(-50%);
+			opacity: .95;
+			color: #999;
+		}
+
+		.btn[href] {
+			color: #333;
+		}
+
+		.btn-prev {
+			left: 0;
+		}
+
+		.btn-next {
+			right: 0;
+		}
+
+		.justify {
+			text-align: justify;
+			text-justify: inter-ideograph;
+		}
+
+		ul.justify {
+			background: #efefef;
+			/* safari浏览器不支持 */
+			/* text-align-last: justify; */
+			/* font-size: 0; */
+			font-size: .1px;
+			font-size: -webkit-calc(0px + 0px);
+		}
+
+		/* 
+			借助伪类新增一行，但会产生多余的空白
+				解决 容器设置font-size：0，子元素重设font-size，img对齐方式
+				但是IE下font-size：0，其样式表现为空格，好像不存在。设置font-size：.1px，IE可以，但Chrome最小字体12px，设置.1px等于设置12px
+				解决  font-size：.1px；font-size：-webkit-calc(0px + 0px);
+		 */
+
+		ul.justify::after {
+			content: "";
+			display: inline-block;
+			width: 100%;
+		}
+
+		ul.justify li {
+			display: inline-block;
+			text-align: center;
+			width: 128px;
+			font-size: 16px;
+		}
+
+		ul.justify img {
+			max-width: 100%;
+			vertical-align: top;
+		}
+
+		.placeholder {
+			display: inline-block;
+			width: 128px;
+			vertical-align: bottom;
+		}
+
+		.first-letter::first-letter {
+			/* color: aqua; */
+			background: aqua;
+		}
+
+		.container {
+			width: 300px;
+			margin: 20px auto;
+		}
+
+		.container p {
+			margin: 1em 0;
+			text-align: left;
+		}
+
+		.container p span {
+			color: blue !important;
+		}
+
+		.container.letter p::first-letter {
+			color: red;
+		}
+
+		.container.line p::first-line {
+			color: red;
+		}
+
+		.price {
+			color: aqua;
+		}
+
+		.price::first-letter {
+			font-size: xx-large;
+			vertical-align: -2px;
+			color: orange;
+		}
+
+		.bg-btn {
+			background-color: currentColor;
+		}
+
+		.green {
+			color: green;
+		}
+
+		.bg-btn::first-line {
+			color: #fff;
+		}
 	</style>
 </head>
 
@@ -328,7 +479,6 @@
 							text-indent负值与文本隐藏，不建议设置很大的负值
 								可能会滚屏卡顿
 								智能阅读设备不会读取缩进在屏幕之外的内容
-								
 								部分浏览器会影响元素的outline区域，通常需设置overflow：hidden
 							text-indent的百分比是相对当前元素的包含块计算的。
 							text-indent仅对第一行内联盒子内容有效。
@@ -347,10 +497,69 @@
 								5.	支持小数。
 								6.	暂不支持百分比。
 				3.	word-space与单词间距
+						1.	继承性。
+						2.	默认值为normal，通常情况表现一样。
+						3.	支持负值，可以让字符重叠，对于 inline-block/inline-table 元素存在差异，不适用word-space清除间隙
+						4.	支持小数。
+						5.	支持百分比。
+						6.	间隔算法受到text-align：justify影响。
+						letter-space作用所有字符，word-space作用空格字符。word-space就是增加空格的宽度。有空格就有效，可以是 Space键敲出来的空格（U+0020），也可以是换行符产生的空格（浏览器解析为 U+0020），还可以是Tab 键敲出来的空格（U+0009），抑或是&npsp;非换行空格（U+00A0）。但不包括零宽空格（U+200B、U+200C、U+200D）、固宽空格（全角 U+3000、U+2003，半角 U+2000、U+2002）以及窄空格（U+2009）。
 
+				4.	word-break和word-warp
+						word-break：
+							normal：使用默认的换行规则
+							break-all：允许任意非CJK（中、日、韩）文本间的单词断行
+							keep-all：不允许CJK文本间的换行，只能在半角空格的连字符处换行。移动端暂不适合
+						word-wrap：
+							normal：使用默认的换行规则
+							break-word：一行单词中实在没有其他靠谱的换行点的时候换行
+						word-wrap在css3中，改为overflow-wrap，但仅webkit和blink浏览器支持较好
+						word-break：break-all和word-wrap：break-word的区别
+							word-break：break-all是所有的都换行，一点空隙都不留		
+							word-wrap：break-word有其他的换行点，就不会使英文断行，容易出现大片空白
 
+				5.	white-space与换行和空格的控制
+							white-space属性声明怎样处理元素内的空白字符，包括空格、回车、制表产生的空白字符，可以决定是否换行（回车），大片的空白区域。
+							值：
+								normal：合并空白字符和换行符
+								pre：空白字符不合并，只有在换行符的地方换行
+								nowrap：合并空白字符，不允许文字环绕
+								pre-wrap：空白字符不合并，只有在换行符的地方换行，允许文字环绕  ie8开始支持
+								pre-line：合并空白字符，只有在换行符的地方换行，允许文字环绕		ie8开始支持
+							white-space与最大可用宽度
+								white-space：nowrap时，元素的宽度表现为最大可用宽度，合并空格，一行显示。
+								应用：
+									包含块过小处理。绝对定位和inline-block元素具有包裹性，当文本宽度大于最大可用宽度时，会出现文本环绕现象，例如一柱擎天。
+									单行文字溢出点点点。
+									水平列表切换。
 
+				6.	text-align与文本对齐
+							text-align：justify两端对齐，ie11不支持让中文两端对齐，IE私有属性text-justify: inter-ideograph可实现两端文字对齐
+							在默认设置下，要实现text-align：justify两端对齐，需满足两点：1.有分隔点，如空格；2.超过一行，此时非最后一行两端对齐
 
+				7.	text-decoration文字与下划线重叠——>利用border模拟
+
+				8.	text-transform: uppercase; 字符大小写
+
+				9.	::first-letter伪元素
+						起作用前提：
+							1.	元素的 display 计算值必须是 block、inline-block、list-item、table-cell或者 table-caption，其他所有 display 计算值都没有用，包括 display:table和 display:flex 等。
+							2.	不是所有的字符都能单独作为::first-letter 伪元素存在的。常见的标点符号、各类括号和引号在::first-letter 伪元素眼中全部都是“辅助类”字符，是赠品。
+							“赠品字符”包括·@#%&*()（）[]【】{}:："“”;；'‘’》《,，.。？?!！…*、/\。
+							正常情况下可以直接作为伪元素的字符就是数字、英文字母、中文、$、一些运算符，以及非常容易被忽视的空格等。
+							::before 伪元素也参与::first-letter 伪元素。
+						::first-letter伪元素生效的css属性
+							字体、背景、margin、padding、border、color、text-decoration、text-transform等。而visibility:hidden 或者 display:none 隐藏::firstletter伪元素，还是省省吧。
+						特点:
+							支持部分display属性值标签嵌套
+								display 值如果是 inline、block、table、table-row、table-caption、table-cell、list-item都是可以的，但是不能是 inline-block 和 inline-table，否则::first-letter伪元素会直接无效；而 display:flex 则改变了规则，直接选择了下一行的字符内容。
+							颜色等权重总是多了一层
+
+				10.	::first-line伪元素
+						:first-line 和:first-letter 伪元素一样，只能作用在块级元素上，也就是display 为 block、inline-block、list-item、table-cell 或者 table-caption的元素设置:first-line 才有效，table、flex 之类都是无效的。
+						支持部分css属性。
+						支持部分display属性值标签嵌套。不支持table等，inline-block时Chrome颜色断开，Firefox和IE无。因此，如果想使用:first-line，首行内容不能混入 inline-block/inline-table 元素。
+						颜色等权重总是多了一层。
 
    -->
 	<h3>动态font-size的图片垂直居中</h3>
@@ -398,6 +607,197 @@
 	<div class="demo">
 		<div class="title tl">我是标题文字内容</div>
 	</div>
+	<h3>word-break：break-all和break-wrap：break-word的区别</h3>
+	<div class="demo">
+		<strong>word-break：break-all</strong>
+		<p class="tl" style="word-break: break-all;width: 300px;margin:0 auto;background: #efefef;">如果您在阅读过程中有任何疑问或者发现表述不严谨的地方，欢迎去官方论坛http://bbs.cssworld.cn进行反馈与交流。</p>
+		<strong>break-wrap：break-word</strong>
+		<p class="tl" style="word-wrap: break-word;overflow-wrap: break-word;width: 300px;margin:0 auto;background: #efefef;">如果您在阅读过程中有任何疑问或者发现表述不严谨的地方，欢迎去官方论坛http://bbs.cssworld.cn进行反馈与交流。</p>
+	</div>
+	<h3>水平列表切换</h3>
+	<div class="demo">
+		<div id="box">
+			<ul>
+				<li>
+					<img src="../img/image.jpg">
+				</li>
+				<li>
+					<img src="../img/image.jpg">
+				</li>
+				<li>
+					<img src="../img/image.jpg">
+				</li>
+				<li>
+					<img src="../img/image.jpg">
+				</li>
+			</ul>
+			<a id="prev" class="btn btn-prev">往前</a>
+			<a href="javascript:" id="next" class="btn btn-next">往后</a>
+		</div>
+	</div>
+	<h3>两端对齐</h3>
+	<div class="demo" style="max-width: 300px;margin: 0 auto;">
+		<strong>居左对齐</strong>
+		<p style="padding: 10px 20px;background: #efefef;text-align: left;font-size: 14px;">这是一段临时想出来的文案，其中可能参杂了几个英文单词，例如CSS，例如JS等。</p>
+		<strong>两端对齐</strong>
+		<p class="justify" style="padding: 10px 20px;background: #efefef;font-size: 14px;">这是一段临时想出来的文案，其中可能参杂了几个英文单词，例如CSS，例如JS等。</p>
+	</div>
+	<h3>两端对齐布局</h3>
+	<div class="demo" style="width: 400px;margin: 0 auto;">
+		<ul class="justify">
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述1</p>
+			</li>
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述2</p>
+			</li>
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述3</p>
+			</li>
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述4</p>
+			</li>
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述5</p>
+			</li>
+		</ul>
+	</div>
+	<div class="demo" style="width: 400px;margin: 0 auto;">
+		<ul class="justify">
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述1</p>
+			</li>
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述2</p>
+			</li>
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述3</p>
+			</li>
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述4</p>
+			</li>
+			<li>
+				<img src="../img/image.jpg" alt="">
+				<p>图片描述5</p>
+			</li>
+			<!-- 占位标签个数与列数一致 -->
+			<li class="placeholder"></li>
+			<li class="placeholder"></li>
+			<li class="placeholder"></li>
+		</ul>
+	</div>
+	<h3>::first-letter</h3>
+	<div class="demo">
+		<p class="first-letter">?????????</p>
+		<p class="first-letter">?????????辅助</p>
+	</div>
+	<h3>::first-letter嵌套</h3>
+	<div class="demo">
+		<div class="container letter">
+			<h4>
+				<strong>请选择display的属性值：</strong>
+				<select id="selectDisplay">
+					<option value="inline" selected="">inline</option>
+					<option value="block">block</option>
+					<option value="inline-block">inline-block</option>
+					<option value="list-item">list-item</option>
+					<option value="table">table</option>
+					<option value="inline-table">inline-table</option>
+					<option value="table-caption">table-caption</option>
+					<option value="table-row">table-row</option>
+					<option value="table-cell">table-cell</option>
+					<option value="flex">flex</option>
+				</select>
+			</h4>
+			<p><span>第一个</span>字符看看会不会变红？</p>
+		</div>
+	</div>
+	<h3>::first-letter的利用</h3>
+	<div class="demo">
+		<p class="price">￥199</p>
+	</div>
+	<h3>::first-line嵌套</h3>
+	<div class="demo">
+		<div class="container line">
+			<h4>
+				<strong>请选择display的属性值：</strong>
+				<select id="selectLineDisplay">
+					<option value="inline" selected="">inline</option>
+					<option value="block">block</option>
+					<option value="inline-block">inline-block</option>
+					<option value="list-item">list-item</option>
+					<option value="table">table</option>
+					<option value="inline-table">inline-table</option>
+					<option value="table-caption">table-caption</option>
+					<option value="table-row">table-row</option>
+					<option value="table-cell">table-cell</option>
+					<option value="flex">flex</option>
+				</select>
+			</h4>
+			<p><span>第一个</span>字符看看会不会变红？</p>
+		</div>
+	</div>
+	<h3>::first-line的利用</h3>
+	<div class="demo">
+		<p class="bg-btn green">绿色按钮</p>
+	</div>
 </body>
+<script>
+	var elePrev = document.getElementById('prev'),
+		eleNext = document.getElementById('next');
+
+	var eleBox = document.getElementById('box');
+	var eleUl = eleBox.querySelector('ul');
+
+	if (elePrev && eleNext && eleBox && eleUl) {
+		var maxX = eleBox.clientWidth - eleBox.scrollWidth;
+
+		elePrev.onclick = function () {
+			var href = elePrev.getAttribute('href');
+			if (href) {
+				eleUl.style.left = '0px';
+				elePrev.removeAttribute('href');
+				eleNext.setAttribute('href', 'javascript:');
+			}
+		};
+		eleNext.onclick = function () {
+			var href = eleNext.getAttribute('href');
+			if (href) {
+				eleUl.style.left = maxX + 'px';
+				eleNext.removeAttribute('href');
+				elePrev.setAttribute('href', 'javascript:');
+			}
+		};
+	}
+
+	var eleSelect = document.getElementById('selectDisplay');
+
+	if (eleSelect) {
+
+		eleSelect.onchange = function () {
+			var value = this.value;
+			document.querySelector(".letter p span").style.display = value;
+		};
+	}
+
+	var eleSelect01 = document.getElementById('selectLineDisplay');
+
+	if (eleSelect01) {
+
+		eleSelect01.onchange = function () {
+			var value = this.value;
+			document.querySelector(".line p span").style.display = value;
+		};
+	}
+</script>
 
 </html>
