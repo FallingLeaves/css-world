@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>元素的装饰与美化</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .demo {
+      margin: 1em 0;
+      text-align: center;
+    }
+
+    .rebeccapurple {
+      color: rebeccapurple;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    .box {
+      width: 300px;
+      height: 100px;
+      margin: 10px auto;
+      background-color: aqua;
+    }
+
+    .bg1 {
+      background-image: url("../img/image.jpg");
+    }
+
+    .bg2 {
+      background-image: url("../img/img_the_scream.jpg");
+    }
+
+    main {
+      display: block;
+      margin: auto;
+      padding: 59px 29px;
+      border-radius: .3em;
+      text-shadow: 0 1px 1px hsla(0, 0%, 100%, .3);
+      box-shadow: 0 0 0 1px hsla(0, 0%, 100%, .3) inset, 0 0.3em 1em rgba(0, 0, 0, 0.12);
+      font: 150%/1.6 Baskerville, Palatino, serif;
+      background: url("../img/winter.jpg") fixed 0 / cover;
+    }
+
+    main>div {
+      font-style: italic;
+      color: #000;
+      padding: 30px;
+      hyphens: auto;
+      background: hsla(0, 0%, 100%, .5);
+      overflow: hidden;
+      position: relative;
+      text-align: left;
+    }
+
+    main>div::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      filter: blur(10px);
+      margin: -30px;
+      background: url("../img/winter.jpg") fixed 0 / cover;
+    }
+
+    main footer {
+      text-align: right;
+    }
+
+    a[href]:active,
+    button:active {
+      /* IE8, IE9 */
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABhJREFUeNpiZGBg4GugAjCOKqSvQoAAAwB65ACNoFNUMwAAAABJRU5ErkJggg==);
+      /* IE10+ */
+      background-image: linear-gradient(to top, rgba(0, 0, 0, .05), rgba(0, 0, 0, .05));
+    }
+
+    .gradient {
+      filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#FFFF0000, endcolorstr=#7F0000FF, gradientType=1);
+      background: linear-gradient(to right, red, rgba(0, 0, 255, .5));
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 
+    不包含css3
+    1.  颜色color
+          * 关键字
+            css1时只支持16个
+            css2只新增了orange
+            css3新增了100多个
+            css4只新增了rebeccapurple
+          * 所有css3新增的关键字原生IE8都不支持。
+          * 如果浏览器无法识别颜色关键字，HTML对颜色关键字解析和css不一样。
+          * transparent关键字 background-color:transparent包括 IE6 浏览器都支持，border-color:transparent 从 IE7 浏览器开始支持，但是 color:transparent 却从 IE9 浏览器才开始支持。
+          * currentColor变量，可以使用当前color的计算值，ie9才支持。
+          * rgb颜色格式支持百分比，百分比和整数不能混用，hsl格式（h代表色调，s代表饱和度，l代表亮度）css3支持
+
+    2.  背景background
+          • background-image: none
+          • background-position: 0% 0%
+          • background-repeat: repeat
+          • background-attachment: scroll
+          • background-color: transparent
+          * 隐藏元素的background-image加不加载
+            Firefox不会发送图片请求；Chrome会，如果父元素display计算值为none，又不会发送请求
+          * background-position百分比的计算方式
+            缺省偏移关键字，默认为center
+            IE8只支持两个关键字，IE9开始支持同时出现 3 个值或 4 个值，作用是指定定位的偏移计算从哪个方位算起。
+            positionX = （容器宽度-图片宽度）* percentX
+            positionY = （容器高度-图片高度）* percentY
+          * background-repeat与渲染
+            半透明遮罩背景
+            .overlay {
+              background: url(alpha.png);
+              background: rgba(0,0,0,.75);
+            } 
+            alpha.png如果做成1px*1px，浏览器渲染吃力，卡顿
+          * background-attachment：fixed/scroll
+          * background-color 背景色永远是最低的
+            利用多背景区分浏览器，例如ie9支持svg ie8不支持
+              .bg {
+                background: url(icon.png);
+                background: url(icon.svg), none;  ie8不支持多背景写法
+              }
+              .bg { 区分ie9及以下和ie10及以上 ie9不支持css3的渐变
+                background: url(loading.gif);
+                background: url(loading.png), linear-gradient(to top, transparent, transparent);
+              } 
+      
+      3.  渐变背景和rgba背景色兼容处理
+            ie9不支持背景渐变，但IE有私有的渐变滤镜：
+              filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=red, endcolorstr=blue, gradientType=1); 
+              1是横向渐变，0是径向渐变，颜色格式还支持16进制的
+              综上所述，要想实现一个 100%红色到 50%透明度蓝色横向渐变，可以使用如下代码组合：
+              .gradient {
+                filter:progid:DXImageTransform.Microsoft.gradient(startcolorstr=#FFFF0000,endcolorstr=#7F0000FF,gradientType=1);
+                background: linear-gradient(to right, red, rgba(0,0,255,.5));
+              } 
+
+
+   -->
+  <h3>color关键字</h3>
+  <div class="demo">
+    <p class="rebeccapurple">color关键字</p>
+    <!-- 需在原生IE中测试 -->
+    <h1 style="color:rebeccapurple;">CSS 色和
+      <font color="rebeccapurple">HTML 色</font>
+      解析差异测试</h1>
+  </div>
+  <h3>百分比格式的rgb</h3>
+  <div class="demo">
+    <h4 style="color: rgb(100%, 0%, 20%)">rgb的百分比</h4>
+  </div>
+  <h3>隐藏元素的background-image加不加载</h3>
+  <div class="demo">
+    <div class="hide box bg1"></div>
+  </div>
+  <h3>背景定位</h3>
+  <div class="demo">
+    <div class="box bg1" style="width: 500px;height: 300px;background-position: -50% -50%;background-repeat: no-repeat;"></div>
+    <div class="box bg2" style="width: 500px;height: 300px;background-position: -50% -50%;background-repeat: no-repeat;"></div>
+  </div>
+  <h3>background-attachment</h3>
+  <div class="demo">
+    <main class="main">
+      <div>
+        "O God, I could be bounded in a nutshell and count myself a king of infinite space, were it not that I have bad dreams."
+        <br> “即使我身处果壳之中，我仍以为自己是宇宙之王”
+        <footer>——
+          <cite>William Shakespeare</cite>
+        </footer>
+      </div>
+    </main>
+  </div>
+  <h3>背景色永远是最低的</h3>
+  <div class="demo">
+    <a href="javascript:;">背景色永远是最低的</a>
+  </div>
+  <h3>垂直渐变</h3>
+  <div class="demo">
+    <div class="gradient">背景渐变</div>
+  </div>
+</body>
+
+</html>
