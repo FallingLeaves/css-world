@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>元素的显示与隐藏</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .demo {
+      margin: 1em 0;
+      text-align: center;
+    }
+
+    .dn {
+      display: none;
+    }
+
+    .tl {
+      text-align: left;
+    }
+
+    .tr {
+      text-align: right;
+    }
+
+    .hidden {
+      position: absolute;
+      visibility: hidden;
+    }
+
+    .vh {
+      visibility: hidden;
+    }
+
+    .clip {
+      position: absolute;
+      clip: rect(0 0 0 0);
+    }
+
+    .out {
+      position: relative;
+      left: -999em;
+    }
+
+    .lower {
+      position: relative;
+      z-index: -1;
+    }
+
+    .opacity {
+      position: absolute;
+      opacity: 0;
+      filter: Alpha(opacity=0);
+    }
+
+    .demo .target {
+      position: absolute;
+      opacity: 0;
+      transition: all 3s;
+      visibility: hidden;
+    }
+
+    .demo:hover>.target {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 
+    1.  元素隐藏的方法
+        * 元素不可见，不占空间，辅助设备无法访问，同时不渲染，可使用<script>标签隐藏。
+          例如：
+            <script type="text/html">
+              <img src="">
+            </script>
+            此时图片不会发送请求
+        * 元素不可见，不占空间，辅助设备无法访问，资源可加载，DOM可访问，则使用display：none
+        * 元素不可见，不占空间，辅助设备无法访问，显隐时有transition效果，
+            .hidden {
+              position: absolute;
+              visibility: hidden;
+            }
+        * 元素不可见，不能点击，辅助设备无法访问，但占据空间保留，则可以使用visibility:hidden 隐藏。
+        * 元素不可见，不能点击，不占据空间，但键盘可访问，则可以使用 clip 剪裁隐藏。
+            .clip {
+              position：absolute;
+              clip：rect(0 0 0 0);
+            }
+            .out {
+              position：relative;
+              left: -999em;
+            }
+        * 元素不可见，不能点击，但占据空间，且键盘可访问，则可以试试 relative隐藏。例如，如果条件允许，也就是和层叠上下文之间存在设置了背景色的父元素，则也可以使用更友好的 z-index 负值隐藏。
+            .lower {
+              position：relative;
+              z-index: -1;
+            }
+        * 元素不可见，但可以点击，而且不占据空间，则可以使用透明度。
+            .opacity {
+              position: absolute;
+              opacity: 0;
+              filter: Alpha(opacity=0);
+            } 
+        * 元素看不见，但位置保留，依然可以点可以选，则直接让透明度为 0。
+    
+    2.  display与元素的显隐
+          在 Firefox 浏览器下，display:none 的元素的 background-image 图片是不加载的，包括父元素 display:none 也是如此；如果是 Chrome 和 Safari 浏览器，则要分情况，若父元素 display:none，图片不加载，若本身背景图所在元素隐藏，则图片依旧会去加载；对 IE浏览器而言，无论怎样都会请求图片资源。
+          <img>设置display：none在所有浏览器下都会加载资源。
+          display：none的元素不能点击，但是通过label关联的input仍会触发。
+          h5新增hidden属性 等于 display：none。
+          display：none不会影响animate动画，会影响transition过渡。
+
+    3.  visibility与元素显隐
+          * visibility的继承性
+          * visibility与css计数器
+              visibility：hidden不会影响计数器，display：none会
+          * visibility与transition，transition支持visibility，visibility：hidden的元素可以通过js获取位置信息，display：none的获取都是0
+          * visibility：collapse
+
+   -->
+  <h3>script标签隐藏</h3>
+  <div class="demo">
+    <script type="text/html">
+      <img src="../img/image.jpg" alt="">
+    </script>
+  </div>
+  <h3>display：none隐藏</h3>
+  <div class="demo">
+    <img src="../img/image.jpg" alt="" class="dn">
+  </div>
+  <h3>绝对定位配合visibility</h3>
+  <div class="demo tl">
+    <img src="../img/image.jpg" alt="" class="hidden">
+  </div>
+  <h3>visibility</h3>
+  <div class="demo">
+    <img src="../img/image.jpg" alt="" class="vh">
+  </div>
+  <h3>clip隐藏</h3>
+  <div class="demo out" style="top: 300px;">
+    <input type="text" class="clip">
+  </div>
+  <h3>z-index</h3>
+  <div class="demo" style="background-color: aqua;">
+    <img src="../img/image.jpg" alt="" class="lower">
+    <input type="text" class="lower">
+  </div>
+  <h3>opacity</h3>
+  <div class="demo tl">
+    <img src="../img/image.jpg" alt="" class="opacity">
+  </div>
+  <h3>display：none的元素仍可点击</h3>
+  <div class="demo tr">
+    <input type="radio" id="any" class="dn">
+    <label for="any">可以点击</label>
+  </div>
+  <h3>visibility的继承性</h3>
+  <div class="demo">
+    <ol class="vh">
+      <li style="visibility: visible">列表 1</li>
+      <li>列表 2</li>
+      <li>列表 3</li>
+      <li style="visibility: visible">列表 4</li>
+    </ol>
+  </div>
+  <h3>visibility与transition</h3>
+  <div class="demo" style="min-height: 300px">
+    <div class="target">
+      <img src="../img/image.jpg" alt="">
+    </div>
+  </div>
+</body>
+<script>
+  document.querySelector("img.vh").addEventListener("click", function () {
+    alert("1");
+  })
+
+  document.querySelector("img.opacity").addEventListener("click", function () {
+    alert("点击有效");
+  })
+
+  document.querySelector("#any").addEventListener("click", function () {
+    alert("仍可以点击");
+  })
+</script>
+
+</html>
