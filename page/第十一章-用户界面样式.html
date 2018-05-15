@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>用户界面样式</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .demo {
+      max-width: 360px;
+      text-align: left;
+      margin: 1em auto;
+      word-spacing: 1em;
+    }
+
+    .tc {
+      text-align: center;
+    }
+
+    .demo > img {
+      max-width: 100%;
+    }
+
+    .crop-box,
+    .preview-box {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .crop,
+    .preview {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .crop-area,
+    .preview {
+      width: 80px;
+      height: 80px;
+    }
+
+    .crop-area {
+      position: absolute;
+      left: 88px;
+      top: 56px;
+      outline: 256px solid #000;
+      outline: 256px solid rgba(0, 0, 0, .5);
+      background: url(about:blank);
+      background: linear-gradient(to top, transparent, transparent);
+      filter: alpha(opacity=50);
+      cursor: move;
+    }
+
+    :root .crop-area {
+      filter: none;
+    }
+
+    .crop img,
+    .preview img {
+      display: block;
+      width: 256px;
+      height: 192px;
+    }
+
+    .preview img {
+      position: absolute;
+      left: -88px;
+      top: -56px;
+    }
+
+    .footer {
+      height: 50px;
+    }
+
+    .footer p {
+      position: absolute;
+      left: 0;
+      right: 0;
+      padding: 15px 0;
+      font-size: 14px;
+      text-align: center;
+      background-color: aqua;
+      outline: 9999px solid aqua;
+      clip: rect(0 9999px 9999px 0)
+    }
+
+    main {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+    }
+
+    main>span {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 8px;
+      border-radius: 50%;
+      font-weight: 600;
+      transform: translate3d(0, 0, 0);
+      transition: all .3s ease-in-out;
+      background: #eee url("data:image/svg+xml,\
+            <svg xmlns='http://www.w3.org/2000/svg' width='90' height='9'>\
+                <rect width='90' height='8' fill='#f2f2f2'/>\
+                <rect width='90' height='2' fill='#e7e7e7'/>\
+                <rect y='2' width='90' height='3' fill='#ececec'/>\
+            </svg>");
+      background-size: 12px 12px;
+    }
+
+    main>span:hover {
+      transform: translate3d(-1px, -1px, 0) scale(1.05);
+      box-shadow: -2px -2px 6px 2px rgba(108, 108, 108, 0.1) inset,
+      0 0 0 5px rgba(255, 255, 255, .6) inset,
+      0 0 0 1px rgba(139, 139, 139, 0.1),
+      2px 2px 10px rgba(0, 0, 0, .2);
+    }
+
+    main>span:nth-of-type(1) {
+      cursor: default;
+    }
+
+    main>span:nth-of-type(2) {
+      cursor: crosshair;
+    }
+
+    main>span:nth-of-type(3) {
+      cursor: help;
+    }
+
+    main>span:nth-of-type(4) {
+      cursor: move;
+    }
+
+    main>span:nth-of-type(5) {
+      cursor: pointer;
+    }
+
+    main>span:nth-of-type(6) {
+      cursor: progress;
+    }
+
+    main>span:nth-of-type(7) {
+      cursor: text;
+    }
+
+    main>span:nth-of-type(8) {
+      cursor: wait;
+    }
+
+    main>span:nth-of-type(9) {
+      cursor: e-resize;
+    }
+
+    main>span:nth-of-type(10) {
+      cursor: ne-resize;
+    }
+
+    main>span:nth-of-type(11) {
+      cursor: nw-resize;
+    }
+
+    main>span:nth-of-type(12) {
+      cursor: n-resize;
+    }
+
+    main>span:nth-of-type(13) {
+      cursor: se-resize;
+    }
+
+    main>span:nth-of-type(14) {
+      cursor: sw-resize;
+    }
+
+    main>span:nth-of-type(15) {
+      cursor: s-resize;
+    }
+
+    main>span:nth-of-type(16) {
+      cursor: w-resize;
+    }
+
+    main>span:nth-of-type(17) {
+      cursor: context-menu;
+    }
+
+    main>span:nth-of-type(18) {
+      cursor: none;
+      background: #eee url('data:image/svg+xml,\
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill-opacity=".15" >\
+                <rect x="30" width="30" height="30" />\
+                <rect y="30" width="30" height="30" />\
+            </svg>');
+      background-size: 18px 18px;
+    }
+
+    main>span:nth-of-type(19) {
+      cursor: cell;
+    }
+
+    main>span:nth-of-type(20) {
+      cursor: vertical-text;
+    }
+
+    main>span:nth-of-type(21) {
+      cursor: alias;
+    }
+
+    main>span:nth-of-type(22) {
+      cursor: copy;
+    }
+
+    main>span:nth-of-type(23) {
+      cursor: no-drop;
+    }
+
+    main>span:nth-of-type(24) {
+      cursor: not-allowed;
+    }
+
+    main>span:nth-of-type(25) {
+      cursor: ew-resize;
+    }
+
+    main>span:nth-of-type(26) {
+      cursor: ns-resize;
+    }
+
+    main>span:nth-of-type(27) {
+      cursor: nesw-resize;
+    }
+
+    main>span:nth-of-type(28) {
+      cursor: nwse-resize;
+    }
+
+    main>span:nth-of-type(29) {
+      cursor: col-resize;
+    }
+
+    main>span:nth-of-type(30) {
+      cursor: row-resize;
+    }
+
+    main>span:nth-of-type(31) {
+      cursor: all-scroll;
+    }
+
+    main>span:nth-of-type(32) {
+      cursor: zoom-in;
+    }
+
+    main>span:nth-of-type(33) {
+      cursor: zoom-out;
+    }
+
+    main>span:nth-of-type(34) {
+      cursor: -webkit-grab;
+    }
+
+    main>span:nth-of-type(35) {
+      cursor: -webkit-grabbing;
+    }
+
+    main>span:nth-of-type(36) {
+      cursor: auto;
+    }
+
+    .cursor-none {
+      cursor: url("../img/transparent.cur"), auto;
+    }
+
+    :root .cursor-none {
+      cursor: none;
+    }
+
+    .demo .left, .demo .right {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+    }
+
+    .demo .left {
+      left: 0;
+      cursor: url("../img/left.png"), auto;
+    }
+
+    .demo .right {
+      right: 0;
+      cursor: url("../img/right.png"), auto;
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- 
+    1.  和border形似的outline属性
+        * 语法与border类似，分为线宽、类型、颜色，支持的关键字和border一样
+        * 万万不可在全局设置outline：0 none
+          在默认状态下，对处于 focus 状态的元素，浏览器会通过虚框或者外发光的形式进行区分和提示。否则用户不知道当前聚焦在哪个元素。
+          有时也需普通元素有类似控件元素的outline效果，label标签模拟input时，键盘focus时，让label标签模拟原生高亮。
+            :focus + label.btn {
+              outline: 1px dotted Highlight;
+              outline: 5px auto -webkit-focus-ring-color;
+            } 
+    2.  真正不占据空间的outline
+        * 内联元素的上下padding似乎不占空间，一旦祖先元素的overflow不是visible，同时上下padding足够大，滚动条就会出现，暴露不占空间的假象。而outline是真正不占空间的。利用其特性可以
+            1.  图片裁剪的镂空矩形，利用很大的outline设置周围半透明遮罩层
+            2.  自动填满屏幕剩余空间，利用outline和clip
+            
+    3.  光标属性
+        • 可以放心使用，无须担心兼容性问题的 cursor 属性值有 auto、crosshair、
+        default、move、text、wait、help、n-resize、e-resize、s-resize、
+        w-resize、ne-resize、nw-resize、se-resize、sw-resize、pointer、
+        progress 、 not-allowed 、 no-drop 、 vertical-text 、 all-scroll 、
+        col-resize 和 row-resize。
+        • 从 IE9 浏览器才开始支持的属性值有 none、alias、cell、copy、ew-resize、
+        ns-resize、nesw-resize、nwse-resize 和 context-menu。
+        • 从 Edge12 才开始支持的属性值有 zoom-in 和 zoon-out。
+        • 从 Edge14 才开始支持的属性值有 grab 和 grabbing（源自 MDN 文档）。
+    
+    4.  自定义光标
+        ie6开始支持自定义光标
+        非IE浏览器直接使用PNG图片自定义
+        IE浏览器只支持.cur格式的光标文件
+
+
+
+
+
+    
+   -->
+  <h3>内联元素的上下padding似乎不占空间？？</h3>
+  <div class="demo" style="overflow: auto;">
+    <span style="padding: 50% 0;">内联元素的上下padding不占空间</span>
+  </div>
+  <h3>outline与镂空效果</h3>
+  <div class="demo">
+    <div class="crop-box">
+      <h4>剪裁（仅演示移动）</h4>
+      <div class="crop">
+        <div id="cropArea" class="crop-area"></div>
+        <img src="../img/winter.jpg" alt="">
+      </div>
+    </div>
+    <div class="preview-box">
+      <h4>预览</h4>
+      <div class="preview">
+        <img src="../img/winter.jpg" alt="" id="previewImg">
+      </div>
+    </div>
+  </div>
+  <h3>各种光标属性值</h3>
+  <main>
+    <span title="系统默认光标形状">default</span>
+    <span title="">crosshair</span>
+    <span title="">help</span>
+    <span title="">move</span>
+    <span title="">pointer</span>
+    <span title="">progress</span>
+    <span title="">text</span>
+    <span title="">wait</span>
+    <span title="">e-resize</span>
+    <span title="">ne-resize</span>
+    <span title="">nw-resize</span>
+    <span title="">n-resize</span>
+    <span title="">se-resize</span>
+    <span title="">sw-resize</span>
+    <span title="">s-resizes</span>
+    <span title="">w-resize</span>
+    <span title="">context-menu</span>
+    <span title="">none</span>
+    <span title="">cell</span>
+    <span title="">vertical-text</span>
+    <span title="">alias</span>
+    <span title="">copy</span>
+    <span title="">no-drop</span>
+    <span title="">not-allowed</span>
+    <span title="">ew-resize</span>
+    <span title="">ns-resize</span>
+    <span title="">nesw-resize</span>
+    <span title="">nwse-resize</span>
+    <span title="">col-resive</span>
+    <span title="">row-resize</span>
+    <span title="">all-scroll</span>
+    <span title="">zoom-in</span>
+    <span title="">zoom-out</span>
+    <span title="">grab</span>
+    <span title="">grabbing</span>
+    <span title="cursor默认值">auto</span>
+  </main>
+  <h3>cursor：none的兼容处理</h3>
+  <div class="demo">
+    <img src="../img/winter.jpg" alt="" class="cursor-none">
+  </div>
+  <h3>自定义光标</h3>
+  <div class="demo" style="position: relative;">
+    <div class="left" title="上一张"></div>
+    <div class="right" title="下一张"></div>
+    <img src="../img/winter.jpg" alt="" style="vertical-align: top;">
+  </div>
+
+
+  <div class="footer">
+    <p>填满底部留白</p>
+  </div>
+</body>
+<script>
+  var cropArea = document.querySelector("#cropArea");
+  var crop = document.querySelector(".crop");
+  var previewImg = document.querySelector("#previewImg");
+  var data = {};
+
+  cropArea.addEventListener("mousedown", function (e) {
+    data = {
+      moving: true,
+      left: this.getBoundingClientRect().left - crop.getBoundingClientRect().left,
+      top: this.getBoundingClientRect().top - crop.getBoundingClientRect().top,
+      x: e.pageX,
+      y: e.pageY
+    }
+  });
+
+  cropArea.addEventListener("mousemove", function (e) {
+    e.preventDefault();
+    if (data.moving) {
+      var moveX = e.pageX - data.x;
+      var moveY = e.pageY - data.y;
+
+      var cssLeft = data.left + moveX;
+      var cssTop = data.top + moveY;
+
+      console.log(cssLeft, cssTop);
+
+      if (cssLeft <= 0) {
+        cssLeft = 0;
+      } else if (cssLeft + this.getBoundingClientRect().width >= crop.clientWidth) {
+        cssLeft = crop.clientWidth - this.getBoundingClientRect().width;
+      }
+
+      if (cssTop <= 0) {
+        cssTop = 0;
+      } else if (cssTop + this.getBoundingClientRect().height >= crop.clientHeight) {
+        cssTop = crop.clientHeight - this.getBoundingClientRect().height;
+      }
+
+      this.style.left = cssLeft + "px";
+      this.style.top = cssTop + "px";
+
+      previewImg.style.left = -1 * cssLeft + "px";
+      previewImg.style.top = -1 * cssTop + "px";
+    }
+  });
+
+  cropArea.addEventListener("mouseup", function () {
+    data.moving = false;
+  });
+</script>
+
+</html>
