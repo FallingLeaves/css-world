@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>流向的改变</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    a,
+    a:active {
+      text-decoration: none;
+    }
+
+    .demo {
+      margin: 1em auto;
+      text-align: center;
+    }
+
+    .demo p {
+      margin: 1em 0;
+    }
+
+    .ell {
+      width: 14em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    p.ell {
+      margin: 1em auto;
+    }
+
+    .rtl {
+      direction: rtl;
+      unicode-bidi: bidi-override;
+    }
+
+    .rtl>span {
+      background-color: aqua;
+    }
+
+    /* .wm>span {
+      writing-mode: vertical-rl;
+    } */
+
+    .verticle-mode {
+      writing-mode: tb-rl;
+      -webkit-writing-mode: vertical-rl;
+      writing-mode: vertical-rl;
+    }
+
+    .box {
+      background-color: #f0f3f9;
+      overflow: hidden;
+      margin: 1em auto;
+    }
+
+    .list {
+      margin: 20px;
+      background-color: #cd0000;
+      color: #fff;
+    }
+
+    .auto {
+      display: block;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .btn {
+      display: inline-block;
+      color: #a78252;
+      background-color: #ddc390;
+      width: 85px;
+      height: 85px;
+      line-height: 85px;
+      border: 6px solid #ddc390;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px #d6b681, 0 1px, 0 2px, 0 3px, 0 4px;
+      text-align: center;
+      -webkit-transition: border-color .25s, background-color .25s;
+      transition: border-color .25s, background-color .25s;
+      font-size: 42px;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      text-indent: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 
+    # 1.  改变水平流向的direction
+            * 从ie6开始支持
+            * 属性值：
+                ltr：left-to-right
+                rtl：right-to-left
+            * 特性：改变替换元素或inline-block/inline-table元素的水平呈现顺序。只要是内联元素，只要与书写流相关，都可以试试direction。在不支持text-align：start/end的浏览器中，direction会改变text-align的初始值。
+    
+    # 2.  direction的黄金搭档unicode-bidi
+            阿拉伯文是从右往左，英文是从左往右，混合方向同时出现时，称为双向性。
+            unicode-bidi明确字符出现双向性时应当有的表现。
+            兼容性比较好的属性值：
+              normal：正常排列。假如设置direction：rtl，则图片、按钮以及问号、加号之类的字符会从右往左显示，但是中文、英文字符还是从左往右显示。
+              embed：只能作用内联元素，通常情况与normal表现一样，embed 属性值的字符排序是独立内嵌的，不受外部影响。
+              bidi-override：重写双向排列规则，通常按照direction的方向排列。bidi-override 的作用原理也是通过插入特殊字符实现的，可以理解为在元素开始位置或者每个匿名子级块盒的开始位置（如果有的话）添加一个 U+202D 字符（如果 direction值是 ltr）或者 U+202E 字符（如果 direction 值是 rtl），并在该元素结束位置添加了一个U+202C 字符（可缺省）。
+
+    # 3.  改变css纵横规则的writing-mode
+            * 原本是为控制内联元素的显示设计的
+            * css3语法：
+              关键字：
+                horizontal-tb  默认值 文本流水平方向，元素从上而下
+                vertical-rl 文本方向是垂直方向，阅读方向是从右往左
+                vertical-lr 文本方向是垂直方向，阅读方向是从左往右
+              全局值：inherit ie8才支持 initial、unset ie13才支持
+                inherit
+                initial
+                unset
+            * 需要关注的writing-mode值
+              writing-mode: lr-tb | tb-rl | tb-lr (IE8+);
+              writing-mode: horizontal-tb | vertical-rl | vertical-lr; 
+            * writing-mode的利用
+                1.  水平方向也能margin合并
+                2.  普通块级元素可以使用margin：auto垂直居中
+                3.  text-align：center图片垂直居中
+                4.  text-indent实现文字下沉
+                5.  实现字体图标的旋转效果
+                6.  高度自适应的布局
+
+   -->
+  <h3>direction与图片呈现顺序</h3>
+  <div class="demo">
+    <p dir="rtl">
+      <img src="../img/spring.jpg" alt="" width="128" height="128">
+      <img src="../img/winter.jpg" alt="" width="128" height="96">
+    </p>
+  </div>
+  <h3>direction与文字溢出打点</h3>
+  <div class="demo">
+    <p class="ell" dir="ltr">开头是我，这是中间，然后就是结束</p>
+    <p class="ell" dir="rtl">开头是我，这是中间，然后就是结束</p>
+  </div>
+  <h3>unicode-bidid:normal/embed/bidi-override</h3>
+  <div class="demo">
+    <!-- 
+      unicode-bidi: bidi-override;会强制所有字符按照direction的方向排列
+      unicode-bidi:normal;会受外面unicode-bidi的影响
+      unicode-bidi:embed;会开启一层看不见的嵌入层，自己在里面排序
+      embed 属性值的作用原理是在元素的开始和结束位置插入特殊字符加以实现的，可以理解为在元素开始位置添加了一个 U+202A 字符（如果direction 值是 ltr）或者 U+202B 字符（如果 direction 值是 rtl），并在该元素结束位置添加了一个 U+202C 字符。
+     -->
+    <p class="rtl">开头是我，
+      <span style="unicode-bidi:normal;">这是中间</span>，然后是结束</p>
+    <p class="rtl">开头是我，
+      <span style="unicode-bidi:embed;">这是中间</span>，然后是结束</p>
+    <p class="rtl">开头是我，
+      <span>&#8235;这是中间&#8236;</span>，然后是结束</p>
+    <p>&#x202E;一二三四五六七八九十</p>
+  </div>
+  <h3>writing-mode</h3>
+  <div class="demo verticle-mode">
+    <div>横看成岭侧成峰</div>
+    <div>远近高低各不同</div>
+  </div>
+  <h3>垂直流，水平方向margin合并</h3>
+  <div class="demo">
+    <div class="box verticle-mode">
+      <div class="list">margin:20px;</div>
+      <div class="list">margin:20px;</div>
+    </div>
+  </div>
+  <h3>margin:auto图片的垂直居中</h3>
+  <div class="demo">
+    <div class="box verticle-mode" style="width: 250px;height: 150px;">
+      <img src="../img/winter.jpg" alt="" width="204" height="128" class="auto">
+    </div>
+    <div class="box verticle-mode" style="width: 250px;height: 150px;">
+      <div class="auto" style="width: 204px;height: 128px;background: aqua;">普通div块级元素</div>
+    </div>
+  </div>
+  <h3>text-align：center图片垂直居中</h3>
+  <div class="demo">
+    <div class="box verticle-mode" style="width: 250px;height: 150px;text-align: center;">
+      <img src="../img/winter.jpg" alt="" width="204" height="128">
+    </div>
+  </div>
+  <h3>text-indent文字下沉</h3>
+  <div class="demo">
+    <p>恭喜你中了88元红包！</p>
+    <a href="javascript:" class="btn verticle-mode">领</a>
+  </div>
+</body>
+
+</html>
