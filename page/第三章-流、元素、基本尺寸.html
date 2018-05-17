@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>流、元素、基本尺寸</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    a,
+    a:active {
+      text-decoration: none;
+    }
+
+    .demo {
+      margin: 1em auto;
+      text-align: center;
+    }
+
+    .demo p {
+      margin: 1em 0;
+    }
+
+    table {
+      width: 128px;
+      margin: 0 auto;
+      background: #a0b3d6;
+      font-size: 12px;
+      border-spacing: 1px;
+      text-align: left;
+    }
+
+    td {
+      padding: 2px 4px;
+      border: 3px solid #fff;
+      background: #f9f9f9;
+    }
+
+    .father {
+      width: 120px;
+      padding: 10px;
+      background: aqua;
+      margin: 0 auto;
+    }
+
+    .father span {
+      display: inline-block;
+      white-space: nowrap;
+      background: #a0b3d6;
+    }
+
+    .const {
+      width: 240px;
+      text-align: left;
+      margin: 0 auto;
+    }
+
+    .nav {
+      background: rebeccapurple;
+    }
+
+    .nav-a {
+      display: block;
+      margin: 0 10px;
+      padding: 5px;
+      border-bottom: 1px solid aqua;
+    }
+
+    .nav-a+.nav-a+.nav-a {
+      border-bottom: 0;
+    }
+
+    .width {
+      width: 100%;
+    }
+
+    .box {
+      width: 240px;
+      margin: 20px auto;
+    }
+
+    .content {
+      display: inline-block;
+      text-align: left;
+    }
+
+    .ao,
+    .tu {
+      display: inline-block;
+      width: 0;
+      font-size: 14px;
+      line-height: 18px;
+      margin: 35px;
+      color: #fff;
+    }
+
+    .ao:before,
+    .tu:before {
+      outline: 2px solid #cd0000;
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    .ao:before {
+      content: "love你love";
+    }
+
+    .tu {
+      direction: rtl;
+    }
+
+    .tu:before {
+      content: "我love你";
+    }
+
+    .wrap {
+      width: 300px;
+      height: 200px;
+      margin: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wrap ul {
+      position: absolute;
+      padding: 0;
+      white-space: nowrap;
+      list-style-type: disc;
+    }
+
+    .wrap li {
+      display: inline-block;
+    }
+
+    .wrap li::before {
+      content: attr(data-index);
+      position: absolute;
+      margin: 5px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, .5);
+      width: 22px;
+      height: 22px;
+      line-height: 22px;
+      text-align: center;
+      color: #fff;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 
+    1.  块级元素
+        * 块级元素和display为block的元素不是同一个概念。块级元素基本特征：一个水平流上只能显示一个元素，多个块级元素换行显示。可以配合clear清除浮动。
+        * list-item会出现项目符号？
+          块级盒子负责结构，内联盒子负责内容
+          list-item元素会生成一个附加盒子，学名标记盒子，专门用来存放圆点、数组这些项目符号。IE浏览器伪元素不支持list-item，是因为无法创建标记盒子。
+        * display：inline-block表现的解释
+          每个元素包含两个容器盒子，外在盒子和内在盒子。外在盒子决定元素是一行显示，还是换行显示；内在盒子负责宽高、内容呈现等。
+          值为block的元素由外在的块级盒子和内在的块级容器盒子组成
+          值为inline-block的元素由外在的内联盒子和内在的块级容器盒子组成
+          值为inline的元素由外在的内联盒子和内在的内联容器盒子组成
+
+    2.  width/height作用的具体细节
+        * 深藏不露的width：auto
+          至少4种不同的宽度表现
+          1.  充分利用可用空间
+          2.  收缩和包裹（包裹性），收缩到合适
+          3.  收缩到最小
+          4.  超出容器限制，除非明确的width相关设置，否则上面3种情况不会超出父元素容器宽度，但存在特殊情况。例如连续很长的数字和英文或内联元素设置white-space：nowrap。
+        * css世界中盒子分为外在盒子、内在盒子，显示分为外部显示、内部显示，尺寸分为外部尺寸、内部尺寸
+          表现1（div宽度默认100%显示）是外部尺寸，其他都是内部尺寸
+          1.  外部尺寸与流体特征
+              * 正常流宽度，铺满容器
+                “鑫三无准则”，即“无宽度，无图片，无浮动”。
+                表现为外部尺寸的块级元素设置宽度，就失去流动性。
+                流动性：一种margin/border/padding/content自动分配水平空间的机制。
+              * 格式化宽度
+                仅出现在绝对定位模型中，即absolute/fixed。同时设置对立属性left、right或top、bottom，元素的宽度表现可视化宽度，也具有完全的流动性。
+          2.  内部尺寸与流体特性
+              元素的尺寸由内部的元素决定，而非外部的容器决定。
+              * 包裹性（包裹和自适应性）。
+                自适应性：元素尺寸由内部元素决定，但永远小于“包含块”容器的尺寸（除非容器尺寸小于元素的“首选最小宽度”）。除inline-block外，浮动元素和绝对定位元素也具有包裹性，具有类似智能宽度的特性。
+              * 首选最小宽度
+                元素最适合的最小宽度。
+                css世界中图片和文字的权重远大于布局。
+                具体表现规则：
+                  * 东亚文字（如中文）最小宽度为每个汉字的宽度。
+                  * 西方文字最小宽度由特定的连续的英文字符单元决定。并不是所有的英文字符都会组成连续单元，一般会终止于空格（普通空格）、短横线、问号以及其他非英文字符等。
+                  * 类似图片这样的替换元素的最小宽度就是该元素内容本身的宽度。
+              * 最大宽度
+                最大宽度实际等同于包裹性元素设置 white-space:nowrap 声明后的宽度。如果内部没有块级元素或者块级元素没有设定宽度值，则最大宽度实际上是最大的连续内联盒子的宽度。连续内联盒子指的全部都是内联级别的一个或一堆元素，中间没有任何的换行标签<br>或其他块级元素。
+        * width值作用的细节
+
+
+
+   -->
+  <h3>table-layout:auto表格一柱擎天现象</h3>
+  <!-- 
+  当每一列宽度不够时，文字能断则断，英文不能断
+
+ -->
+  <div class="demo">
+    <table>
+      <tbody>
+        <tr>
+          <td>就1列就1列就1列就1列就1列</td>
+          <td>当父级relative，且宽度很小的时候，例如{position:relative; width:20px;}，absolute元素也会出现一柱擎天的情况；</td>
+          <td>当父级relative，且宽度很小的时候，例如{position:relative; width:20px;}，absolute元素也会出现一柱擎天的情况；</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>超出容器限制</h3>
+  <div class="demo">
+    <div class="father">
+      <p>1231231231313131313131</p>
+      <span>恰如一江春水向东流，流到断崖也不回头</span>
+    </div>
+  </div>
+  <h3>流动性示意</h3>
+  <div class="demo">
+    <div class="const">
+      <h4>无宽度</h4>
+      <div class="nav">
+        <a href="javascript:" class="nav-a">导航1</a>
+        <a href="javascript:" class="nav-a">导航2</a>
+        <a href="javascript:" class="nav-a">导航3</a>
+      </div>
+      <h4>width:100%</h4>
+      <div class="nav">
+        <a href="javascript:" class="nav-a width">导航1</a>
+        <a href="javascript:" class="nav-a width">导航2</a>
+        <a href="javascript:" class="nav-a width">导航3</a>
+      </div>
+    </div>
+  </div>
+  <h3>按钮元素包裹性</h3>
+  <div class="demo">
+    <div class="box">
+      <button>按钮</button>
+    </div>
+    <div class="box">
+      <button>文字再多一点</button>
+    </div>
+    <div class="box">
+      <button>按钮文字越多宽度越宽（包裹，内部尺寸特性），但不会超过容器宽度（自适应性）</button>
+    </div>
+    <div class="box" style="background: rebeccapurple;padding: 10px;">
+      <p id="more" class="content">文本内容</p>
+    </div>
+    <p>
+      <button id="btnMore">更多文字</button>
+    </p>
+  </div>
+  <h3>首选最小宽度</h3>
+  <div class="demo">
+    <div class="box" style="width: 0;background: rebeccapurple;padding: 10px;">
+      <p class="content">文本内容</p>
+      <p class="content">display:inline-block</p>
+      <p class="content" style="word-break: break-all;">display:inline-block</p>
+    </div>
+  </div>
+  <h3>首选最小宽度与凹凸</h3>
+  <div class="demo">
+    <span class="ao"></span>
+    <span class="tu"></span>
+  </div>
+  <h3>最大宽度</h3>
+  <div class="demo">
+    <!-- 
+      3处连续内联盒子
+        1.  <br>前的4个内联盒子组成
+        2.  <br>后面“我是下一行”匿名内联盒子
+        3.  <p>标签里面的内联盒子，也就是一段文字
+
+      最大宽度为3个连续内联盒子宽度的最大值
+     -->
+    <div style="display: inline-block;">
+      我是文本,
+      <span>我在inline标签内</span>
+      <button>我是按钮</button>
+      <img src="../img/delete.png" alt="">
+      <br> 我是下一行
+      <p>我是一段描述</p>
+    </div>
+  </div>
+  <h3>最大宽度与水平滚动</h3>
+  <div class="demo">
+    <div class="wrap">
+   
+        <ul>
+          <li data-index="1">
+            <img src="../img/spring.jpg" width="256">
+          </li>
+          <li data-index="2">
+            <img src="../img/spring.jpg" width="256">
+          </li>
+          <li data-index="3">
+            <img src="../img/spring.jpg" width="256">
+          </li>
+          <li data-index="4">
+            <img src="../img/spring.jpg" width="256">
+          </li>
+          <li data-index="5">
+            <img src="../img/spring.jpg" width="256">
+          </li>
+        </ul>
+  
+    </div>
+  </div>
+</body>
+<script src="https://unpkg.com/better-scroll/dist/bscroll.min.js"></script>
+<script>
+  var content = document.querySelector("#more");
+  document.querySelector("#btnMore").addEventListener("click", function () {
+    content.innerHTML += "新增文本";
+  });
+
+  var scroll = new BScroll(".wrap", {
+    scrollX: true,
+    scrollY: false,
+    // probeType: 3
+  })
+
+  // scroll.on("scroll", function(pos) {
+  //   console.log(pos);
+  // })
+</script>
+
+</html>
