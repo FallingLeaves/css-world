@@ -149,6 +149,106 @@
       color: #fff;
       font-size: 12px;
     }
+
+    .test {
+      display: inline-block;
+      white-space: nowrap;
+      background-color: #cd0000;
+    }
+
+    .txt {
+      display: inline-block;
+      width: 100%;
+      background-color: #34538b;
+      color: #fff;
+      text-align: left;
+    }
+
+    .size {
+      width: 300px;
+      height: 160px;
+      padding: 30px;
+      background: aqua;
+      box-sizing: border-box;
+      margin: 1em auto;
+    }
+
+    .size>.child {
+      height: 100%;
+      background: rebeccapurple;
+    }
+
+    .rel {
+      position: relative;
+    }
+
+    .rel>.child {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .child:before {
+      content: "";
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    .min {
+      width: 200px;
+      height: 100px;
+      background: aqua;
+      margin: 0 auto;
+      transition: min-height .3s;
+    }
+
+    .min+.min {
+      margin: 1em auto;
+      min-height: 0;
+    }
+
+    .min:hover {
+      min-height: 200px;
+    }
+
+    .demo.max>img {
+      max-width: 200px;
+    }
+
+    #check {
+      position: absolute;
+      clip: rect(0 0 0 0);
+    }
+
+    .element {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s;
+    }
+
+    #check:checked~.element {
+      max-height: 600px;
+    }
+
+    .check-in,
+    .check-out {
+      text-align: left;
+      color: aqua;
+      cursor: pointer;
+    }
+
+    .check-out {
+      display: none;
+    }
+
+    #check:checked~.check-in {
+      display: none;
+    }
+
+    #check:checked~.check-out {
+      display: inline-block;
+    }
   </style>
 </head>
 
@@ -195,8 +295,66 @@
               * 最大宽度
                 最大宽度实际等同于包裹性元素设置 white-space:nowrap 声明后的宽度。如果内部没有块级元素或者块级元素没有设定宽度值，则最大宽度实际上是最大的连续内联盒子的宽度。连续内联盒子指的全部都是内联级别的一个或一堆元素，中间没有任何的换行标签<br>或其他块级元素。
         * width值作用的细节
+          width是作用在内在盒子上的
+          内在盒子包括：content box、padding box、border box、margin box
+          content box环绕着width和height给定的矩形
+          元素实际尺寸 = width/height + padding + border
+          对于块级元素，width：auto，元素会铺满容器，一旦设置了width具体数字，元素的流动性就缺失
+        * 宽度分离原则
+          css中width属性不与影响宽度的padding/border（有时候包括margin）属性共存。width单独占据一层标签，而padding、border、margin利用流动性在内部自适应。
+        * 改变width/height作用细节的box-sizing
+          box-sizing是css3属性，IE8 需加前缀-ms-
+          1.  box-sizing的作用
+            默认情况，width作用在content box，box-sizing可以使width作用的盒子改为其他几个
+            box-sizing：content-box   默认
+            box-sizing：padding-box   Firefox曾经支持
+            box-sizing：border-box    全线支持
+            box-sizing：margin-box    从未支持
+          2.  box-sizing为何不支持margin-box
+            * 设置width/height后，margin不会影响其offset尺寸，margin只有在width：auto时可以改变元素的尺寸，但此时元素处于流动性，不需要box-sizing
+            * margin的背景永远是透明的。如果box-sizing支持margin-box，那么background-origin支不支持，若支持，与margin的背景永远是透明的相违背
+        * height：auto
+          height：auto，有外部尺寸特性——格式化高度，仅存在绝对定位中同时出现对立属性
+        * height：100%
+          * 对于width，父元素width：auto，子元素百分比也支持，而对于height，父元素height：auto，只要子元素在文档流中，子元素height百分比无效。
+          * 为何height百分比失效，width百分比有效
+            浏览器渲染的基本原理：
+              首先下载文档内容，加载头部的样式资源（如果有的话），然后按照从上而下、自内而外的顺序渲染DOM内容。本例就是，先渲染父元素，后渲染子元素。当渲染到父元素的时候，子元素的width：100%并没有渲染，父元素宽度就是图片加上文字内容的宽度；等到渲染到文字子元素时，父元素宽度已经固定，此时width：100%就是固定的父元素宽度，宽度不够就溢出。
+            height和width类似，不会死循环，静态渲染，一次到位。
+            如果包含块的高度没有显式指定（即高度由内容决定），并且该元素不是绝对定位，则计算值为auto。auto与百分比计算为NaN。
+            如果包含块的宽度取决于该元素的宽度，那么产生的布局在css2.1中是未定义的。各个浏览器对这个未定义行为都是一致的，按照包含块真实宽度的计算值作为百分比的基数。
+          * 让height百分比有效
+            设置显式的高度
+            使用绝对定位
+              绝对定位的宽高百分比是相对于padding box的，非绝对定位相对于content box
 
+    3.  min/max-width、min/max-height
+        * css世界中，min/max-width出现一定是在流体布局或自适应布局中
+        * 与众不同的初始值
+          max系列的初始值是none
+          min系列的初始值是auto
+            mdn和w3c上min-width/min-height初始值是0
+            如果是0，设置min-height配合过渡会出现动画
+        * 超越!important，超越最大
+          超越!important，max-width的权重比!important大
+          超越最大，min-width会覆盖max-width
+        * 任意高度元素的展开收起技术
+          max-height配合过渡
 
+    4.  内联元素
+        从作用上讲，块级元素负责结构，内联元素负责内容。css世界是为图文展示而设计的。
+        * 哪些是内联元素
+          1.  从定义看
+            内联元素的内联特指外在盒子，和display为inline的元素不是一个概念。外在盒子为内联盒子的元素是内联元素。
+          2.  从表现看
+            典型特征是可以和文字在一行显示。
+        * 内联盒模型
+            内容区域（content area）。内容区域指一种围绕文字看不见的盒子，其大小仅受字符本身特性控制，本质上是一个字符盒子（character box）；但有些元素，如图片这样的替换元素，其内容不是文字，不存在字符盒子之类的，对于这些元素，内容区域可以看成元素自身。可以把文字选中的背景色区域作为内容区域。
+            内联盒子（inline box）。内联盒子让内容成一行显示，实际指的是元素的外在盒子，用来决定元素是内联还是块级。可以细分内联盒子和匿名内联盒子。
+            行框盒子（line box）。由一个一个内联盒子组成。
+            包含盒子（containing box 包含块）。由一行一行行框盒子组成。
+        * 幽灵空白节点（strut）
+          在 HTML5 文档声明中，内联元素的所有解析和渲染表现就如同每个行框盒子的前面有一个“空白节点”一样。这个“空白节点”永远透明，不占据任何宽度，看不见也无法通过脚本获取，就好像幽灵一样，但又确确实实地存在，表现如同文本节点一样。
 
    -->
   <h3>table-layout:auto表格一柱擎天现象</h3>
@@ -292,25 +450,71 @@
   <h3>最大宽度与水平滚动</h3>
   <div class="demo">
     <div class="wrap">
-   
-        <ul>
-          <li data-index="1">
-            <img src="../img/spring.jpg" width="256">
-          </li>
-          <li data-index="2">
-            <img src="../img/spring.jpg" width="256">
-          </li>
-          <li data-index="3">
-            <img src="../img/spring.jpg" width="256">
-          </li>
-          <li data-index="4">
-            <img src="../img/spring.jpg" width="256">
-          </li>
-          <li data-index="5">
-            <img src="../img/spring.jpg" width="256">
-          </li>
-        </ul>
-  
+
+      <ul>
+        <li data-index="1">
+          <img src="../img/spring.jpg" width="256">
+        </li>
+        <li data-index="2">
+          <img src="../img/spring.jpg" width="256">
+        </li>
+        <li data-index="3">
+          <img src="../img/spring.jpg" width="256">
+        </li>
+        <li data-index="4">
+          <img src="../img/spring.jpg" width="256">
+        </li>
+        <li data-index="5">
+          <img src="../img/spring.jpg" width="256">
+        </li>
+      </ul>
+
+    </div>
+  </div>
+  <h3>width：100%与不存在宽度死循环</h3>
+  <div class="demo">
+    <div class="test">
+      <img src="../img/winter.jpg" alt="" width="200">
+      <span class="txt">红色背景是父级</span>
+    </div>
+  </div>
+  <h3>绝对定位和非绝对定位百分比区别</h3>
+  <div class="demo">
+    <div class="size">
+      <div class="child">宽度240px高度100px</div>
+    </div>
+    <div class="size rel">
+      <div class="child">宽度300px高度160px</div>
+    </div>
+  </div>
+  <h3>min系列的初始值是auto不是0</h3>
+  <div class="demo">
+    <div class="min"></div>
+    <div class="min"></div>
+  </div>
+  <h3>超越!important大，超越最大</h3>
+  <div class="demo max">
+    <img src="../img/winter.jpg" alt="" style="width: 300px !important;">
+    <img src="../img/spring.jpg" alt="" style="min-width: 400px;">
+  </div>
+  <h3>收起展开动画</h3>
+  <div class="demo">
+    <div class="box" style="text-align: left;">
+      <input type="checkbox" name="" id="check">
+      <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam, vitae!</p>
+      <div class="element">
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptates sequi atque magnam et, asperiores deserunt provident
+          earum doloremque sapiente molestias. Harum facere consectetur a ullam et nobis tempore ea maiores pariatur odio
+          maxime sint quasi at iste dicta, atque esse suscipit ipsum. Odio, voluptate ea? Quae, est modi? Consequuntur, facere?</p>
+      </div>
+      <label for="check" class="check-in">更多</label>
+      <label for="check" class="check-out">收起</label>
+    </div>
+  </div>
+  <h3>幽灵空白节点</h3>
+  <div class="demo">
+    <div style="background: aqua">
+      <span style="display: inline-block;"></span>
     </div>
   </div>
 </body>
